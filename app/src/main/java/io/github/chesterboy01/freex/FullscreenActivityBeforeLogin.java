@@ -236,12 +236,68 @@ public static class SignInDialogFragment extends DialogFragment {
                     public void onClick(DialogInterface dialog, int id)
                     {
                         Toast.makeText(getActivity(), "注册", Toast.LENGTH_LONG).show();
+                        SignUpDialogFragment dialog_signup = new SignUpDialogFragment();
+                        dialog_signup.show(getFragmentManager(), "signupDialog");
                     }
                 });
         return builder.create();
     }
 
 }
+
+
+
+
+    public static class SignUpDialogFragment extends DialogFragment {
+        /* public static SignInDialogFragment newInstance() {
+             return new SignInDialogFragment();
+         }*/
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState)
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            // Get the layout inflater
+            LayoutInflater inflater = getActivity().getLayoutInflater();
+            View view = inflater.inflate(R.layout.signup_fragment, null);
+            //获取注册的4个textview的信息
+            final EditText tv21 = (EditText) view.findViewById(R.id.id_txt_useremail);
+            final EditText tv22 = (EditText) view.findViewById(R.id.id_txt_username_1);
+            final EditText tv23 = (EditText) view.findViewById(R.id.id_txt_password_1);
+            final EditText tv24 = (EditText) view.findViewById(R.id.id_txt_password_2);
+            // Inflate and set the layout for the dialog
+            // Pass null as the parent view because its going in the dialog layout
+            builder.setView(view)
+                    // Add action buttons
+                    .setPositiveButton("Start Trading!",
+
+                            new DialogInterface.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(DialogInterface dialog, int id)
+                                {
+                                    //获取输入的信息
+                                    String useremail = tv21.getText().toString();
+                                    String username_signup = tv22.getText().toString();
+                                    String password_signup_1 = tv23.getText().toString();
+                                    String password_signup_2 = tv24.getText().toString();
+
+                                    Toast.makeText(getActivity(),
+                                            "用户名是",
+                                            Toast.LENGTH_LONG).show();
+                                }
+                            })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id)
+                        {
+                            Toast.makeText(getActivity(), "注册", Toast.LENGTH_LONG).show();
+                        }
+                    });
+            return builder.create();
+        }
+
+    }
     /*
     public static class SignUpDialogFragment extends DialogFragment {
         public static SignUpDialogFragment newInstance() {
