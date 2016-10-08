@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">FreeX</string>
+
+    <string name="dummy_button">Click to Launch FreeX </string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="copyright">Copyright © 2016. ECE 651 Group 3. All rights reserved.</string>
+    <string name="slogan">feel Free to eXchange</string>
+    <string name="login_title">Sign In</string>
+    <string name="signup_title">Sign Up</string>
+</resources>

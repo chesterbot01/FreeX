@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_welcome"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="0dp"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    android:paddingTop="0dp"
+    android:orientation="vertical"
+    android:background="@color/black_overlay"
+    tools:context="io.github.chesterboy01.freex.WelcomeActivity">
+    <ImageView
+        android:id="@+id/logo_of_app"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/logo_app"
+        />
+    <TextView
+        android:textStyle="italic"
+        android:text="@string/slogan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/logo_of_app"
+        android:textColor="#444444"
+        android:textSize="24sp"
+        />
+    <TextView
+        android:text="@string/copyright"
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:textColor="#00000f"
+        android:textSize="10sp"
+        />
+
+</RelativeLayout>
