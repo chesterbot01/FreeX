@@ -5,8 +5,8 @@
     android:layout_height="wrap_content"
     android:paddingBottom="10dp"
     android:background="#03986f"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
     android:paddingTop="10dp"
     >
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -57,21 +57,17 @@
         android:inputType="textPassword"
         android:drawableLeft="@drawable/password_icon_1"/>
 
-    <!---    <Button
-            android:id="@+id/sign_in_button"
-            style="?metaButtonBarButtonStyle"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:layout_weight="0.61"
-            android:text="Log In"
-            android:textSize="24sp"
-            android:background="@color/colorBlack"
-            android:textColor="#FFFFFF"
-            android:textAllCaps="false"
-            android:typeface="monospace"
-            android:textStyle="bold"
-            />
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:background="#03986f"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp"
+        android:paddingTop="10dp"
+        >
+
         <Button
 
             android:id="@+id/sign_up_button"
@@ -81,11 +77,28 @@
             android:padding="16dp"
             android:layout_weight="0.61"
             android:text="Sign Up"
-            android:background="@color/colorGreen"
+            android:background="@drawable/signin_signup_button"
             android:textSize="24sp"
             android:textColor="#FFFFFF"
             android:textAllCaps="false"
             android:typeface="monospace"
             android:textStyle="bold"/>
-     -->
+    <Button
+            android:id="@+id/sign_in_button"
+            style="?metaButtonBarButtonStyle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:layout_weight="0.61"
+            android:text="Log In"
+            android:textSize="24sp"
+            android:background="@drawable/signin_login_button"
+            android:textColor="#FFFFFF"
+            android:textAllCaps="false"
+            android:typeface="monospace"
+            android:textStyle="bold"
+            />
+
+
+    </LinearLayout>
     </LinearLayout>

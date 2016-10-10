@@ -1,21 +1,20 @@
 package io.github.chesterboy01.freex;
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
-import android.app.DialogFragment;
-import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
+
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.appindexing.Thing;
+import com.google.android.gms.common.api.GoogleApiClient;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -27,8 +26,6 @@ public class FullscreenActivityBeforeLogin extends AppCompatActivity {
      * Identifier for each type of Dialog, 他们分别是登陆对话框，注册对话框，等待进度条框
      */
     private static final int SIGNIN = 0, SIGNUP = 1, PROGRESSTAG = 2;
-
-
 
 
     /**
@@ -102,17 +99,21 @@ public class FullscreenActivityBeforeLogin extends AppCompatActivity {
             return false;
         }
     };
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,  WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_fullscreen_activity_before_login);
 
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = findViewById(R.id.fullscreen_content);
-
 
 
         // Set up the user interaction to manually show or hide the system UI.
@@ -139,6 +140,9 @@ public class FullscreenActivityBeforeLogin extends AppCompatActivity {
             }
         });
 
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     @Override
@@ -195,109 +199,47 @@ public class FullscreenActivityBeforeLogin extends AppCompatActivity {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
-//分别定义三个要用到的alert dialog
-public static class SignInDialogFragment extends DialogFragment {
-       /* public static SignInDialogFragment newInstance() {
-            return new SignInDialogFragment();
-        }*/
+
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    public Action getIndexApiAction() {
+        Thing object = new Thing.Builder()
+                .setName("FullscreenActivityBeforeLogin Page") // TODO: Define a title for the content shown.
+                // TODO: Make sure this auto-generated URL is correct.
+                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
+                .build();
+        return new Action.Builder(Action.TYPE_VIEW)
+                .setObject(object)
+                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
+                .build();
+    }
+
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState)
-    {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        // Get the layout inflater
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.login_fragment, null);
-        //获取用户名的textview
-        final EditText tv1 = (EditText) view.findViewById(R.id.id_txt_username);
-        final EditText tv2 = (EditText) view.findViewById(R.id.id_txt_password);
-        // Inflate and set the layout for the dialog
-        // Pass null as the parent view because its going in the dialog layout
-        builder.setView(view)
-                // Add action buttons
-                .setPositiveButton("Sign In",
+    public void onStart() {
+        super.onStart();
 
-                        new DialogInterface.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(DialogInterface dialog, int id)
-                            {
-                                //获取输入的信息
-                                String username = tv1.getText().toString();
-                                String password = tv2.getText().toString();
-
-                                Toast.makeText(getActivity(),
-                                        "用户名是"+username+" 密码是"+password,
-                                        Toast.LENGTH_LONG).show();
-                            }
-                        })
-                .setNegativeButton("Sign Up & Start Trading", new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id)
-                    {
-                        Toast.makeText(getActivity(), "注册", Toast.LENGTH_LONG).show();
-                        SignUpDialogFragment dialog_signup = new SignUpDialogFragment();
-                        dialog_signup.show(getFragmentManager(), "signupDialog");
-                    }
-                });
-        return builder.create();
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        AppIndex.AppIndexApi.start(client, getIndexApiAction());
     }
 
-}
+    @Override
+    public void onStop() {
+        super.onStop();
 
-
-
-
-    public static class SignUpDialogFragment extends DialogFragment {
-        /* public static SignInDialogFragment newInstance() {
-             return new SignInDialogFragment();
-         }*/
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState)
-        {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            // Get the layout inflater
-            LayoutInflater inflater = getActivity().getLayoutInflater();
-            View view = inflater.inflate(R.layout.signup_fragment, null);
-            //获取注册的4个textview的信息
-            final EditText tv21 = (EditText) view.findViewById(R.id.id_txt_useremail);
-            final EditText tv22 = (EditText) view.findViewById(R.id.id_txt_username_1);
-            final EditText tv23 = (EditText) view.findViewById(R.id.id_txt_password_1);
-            final EditText tv24 = (EditText) view.findViewById(R.id.id_txt_password_2);
-            // Inflate and set the layout for the dialog
-            // Pass null as the parent view because its going in the dialog layout
-            builder.setView(view)
-                    // Add action buttons
-                    .setPositiveButton("Start Trading!",
-
-                            new DialogInterface.OnClickListener()
-                            {
-                                @Override
-                                public void onClick(DialogInterface dialog, int id)
-                                {
-                                    //获取输入的信息
-                                    String useremail = tv21.getText().toString();
-                                    String username_signup = tv22.getText().toString();
-                                    String password_signup_1 = tv23.getText().toString();
-                                    String password_signup_2 = tv24.getText().toString();
-
-                                    Toast.makeText(getActivity(),
-                                            "用户名是",
-                                            Toast.LENGTH_LONG).show();
-                                }
-                            })
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener()
-                    {
-                        @Override
-                        public void onClick(DialogInterface dialog, int id)
-                        {
-                            Toast.makeText(getActivity(), "注册", Toast.LENGTH_LONG).show();
-                        }
-                    });
-            return builder.create();
-        }
-
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        AppIndex.AppIndexApi.end(client, getIndexApiAction());
+        client.disconnect();
     }
+
+    //分别定义三个要用到的alert dialog
+
+
+
     /*
     public static class SignUpDialogFragment extends DialogFragment {
         public static SignUpDialogFragment newInstance() {
@@ -312,7 +254,9 @@ public static class SignInDialogFragment extends DialogFragment {
         }
 */
 
-
+    public static void communication() {
+        return;
+    }
 }
 
 

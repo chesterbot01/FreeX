@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/half_overlay_user"
-        android:drawable="@drawable/user_icon"
+        android:drawable="@drawable/user_icon4"
         android:width="30dp"
         android:height="30dp"
         />

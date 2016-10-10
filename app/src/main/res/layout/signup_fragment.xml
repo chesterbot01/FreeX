@@ -5,8 +5,8 @@
     android:layout_height="wrap_content"
     android:paddingBottom="10dp"
     android:background="#03986f"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
     android:paddingTop="10dp"
     >
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -33,7 +33,7 @@
 
     </FrameLayout>
     <EditText
-        android:id="@+id/id_txt_username_1"
+        android:id="@+id/id_txt_useremail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
@@ -45,7 +45,7 @@
         android:inputType="textEmailAddress"
         android:drawableLeft="@drawable/email_icon"/>
     <EditText
-        android:id="@+id/id_txt_useremail"
+        android:id="@+id/id_txt_username_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
@@ -79,6 +79,58 @@
         android:hint="Confirm your password"
         android:inputType="textPassword"
         android:drawableLeft="@drawable/password_icon_1"/>
+
+    <TextView
+        android:id="@+id/error_prompt_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textColor="#ff0000"
+        android:gravity="center"/>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="10dp"
+        android:background="#03986f"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp"
+        android:paddingTop="10dp"
+        >
+        <Button
+            android:id="@+id/signup_cancel_button"
+            style="?metaButtonBarButtonStyle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="14dp"
+            android:layout_weight="0.61"
+            android:text="Cancel"
+            android:textSize="20sp"
+            android:background="@drawable/signin_login_button"
+            android:textColor="#FFFFFF"
+            android:textAllCaps="false"
+            android:typeface="monospace"
+            android:textStyle="bold"
+            />
+        <Button
+
+            android:id="@+id/signup_sign_up_button"
+            style="?metaButtonBarButtonStyle"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="14dp"
+            android:layout_weight="0.31"
+            android:text="Start Trading!"
+            android:background="@drawable/signin_signup_button"
+            android:textSize="20sp"
+            android:textColor="#FFFFFF"
+            android:textAllCaps="false"
+            android:typeface="monospace"
+            android:textStyle="bold"/>
+
+
+
+    </LinearLayout>
 
 
 </LinearLayout>

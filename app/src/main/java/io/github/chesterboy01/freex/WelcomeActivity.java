@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.view.WindowManager;
 
+//开场的3秒动画
 public class WelcomeActivity extends AppCompatActivity {
 
     @Override
