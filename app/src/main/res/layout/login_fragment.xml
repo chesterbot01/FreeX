@@ -56,7 +56,13 @@
         android:hint="Password"
         android:inputType="textPassword"
         android:drawableLeft="@drawable/password_icon_1"/>
-
+    <TextView
+        android:id="@+id/error_prompt_login_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textColor="#ff0000"
+        android:gravity="center"/>
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="horizontal"
         android:layout_width="fill_parent"

@@ -2,12 +2,16 @@ package io.github.chesterboy01.freex;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -33,6 +37,43 @@ public class SignInDialogFragment extends DialogFragment {
         Button login_signup = (Button) view.findViewById(R.id.sign_up_button);
         Button login_login = (Button) view.findViewById(R.id.sign_in_button);
 
+        final TextView errorPrompt_login = (TextView) view.findViewById(R.id.error_prompt_login_text);
+        errorPrompt_login.setVisibility(View.INVISIBLE);
+
+        tv1.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                errorPrompt_login.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        tv2.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                errorPrompt_login.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
         login_signup.setOnClickListener(new View.OnClickListener() {
             @Override
             //the action of launching the login page will be executed here.
@@ -43,6 +84,7 @@ public class SignInDialogFragment extends DialogFragment {
 
             }
         });
+
 
         login_login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,6 +97,19 @@ public class SignInDialogFragment extends DialogFragment {
                 Toast.makeText(getActivity(),
                         "用户名是" + username + " 密码是" + password,
                         Toast.LENGTH_LONG).show();
+                Intent intent_toMain = new Intent(getActivity(),MainActivity.class);
+                ((FullscreenActivityBeforeLogin)getActivity()).startActivity(intent_toMain);
+              /*  if (IsValidLogin(username,password)) {
+                    Intent intent = new Intent(getContext(), MainActivity.class);
+                    startActivity(intent);
+                    dismiss();
+                }
+                else{
+                    errorPrompt_login.setText("Wrong username or password.");
+                    errorPrompt_login.setVisibility(View.VISIBLE);
+                }*/
+
+
             }
         });
         return builder.setView(view).create();
