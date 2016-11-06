@@ -8,22 +8,27 @@
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
+
         <LinearLayout
             android:layout_gravity="center"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="289dp"
             android:orientation="vertical"
             android:background="@color/windows_color">
-            <ListView
-                android:id="@+id/lvContact"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:scrollbars="none"
-                android:dividerHeight="0dp"
-                android:divider="#00000000"
-                android:listSelector="#00000000"
-                android:cacheColorHint="#00000000" />
+            <Spinner
+                android:id="@+id/spinner_intype"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+
+            <Button
+                android:text="Trade"
+                android:layout_width="215dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/button" />
         </LinearLayout>
+
+        />
 
     </FrameLayout>
 

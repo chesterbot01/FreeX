@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         history_fragment = new FragHistory();
         user_fragment = new FragUser();
 
+
         fragmentArray = new Fragment[] {index_fragment, trade_fragment,
                 history_fragment, user_fragment};
 
@@ -81,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //img_right.setOnClickListener(this);
 
+        img_right.setOnClickListener(this);
 
         titlePopup = new TitlePopup(this, ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -159,6 +161,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     };
 
 
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -176,12 +179,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    public void onArticleSelected(int position) {
 
-    }
 
     @Override
     public void onFragmentInteraction(Uri uri) {
-        
+
     }
 }

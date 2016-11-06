@@ -1,73 +1,64 @@
 package io.github.chesterboy01.freex.Fragment;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
 
 import io.github.chesterboy01.freex.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link FragHistory.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link FragHistory#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class FragHistory extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+public class FragHistory extends Fragment {
+//部署ultra-pull 下拉刷新
 
     private OnFragmentInteractionListener mListener;
-
-    public FragHistory() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment FragHistory.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static FragHistory newInstance(String param1, String param2) {
-        FragHistory fragment = new FragHistory();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        TextView textView = new TextView(getActivity());
-        textView.setText(R.string.hello_blank_fragment);
-        return textView;
+        View v = inflater.inflate(R.layout.frag_history,container,false);
+        ListView list = (ListView) v.findViewById(R.id.lvContact);
+        ArrayList<HashMap<String, Object>> mylist = new ArrayList<HashMap<String, Object>>();
+        for(int i=0;i<30;i++)
+        {
+            HashMap<String, Object> map = new HashMap<String, Object>();
+            int inamount =  amountOfCucurrencyGenerator();
+            int outamount = amountOfCucurrencyGenerator();
+            map.put("intype", typeOfCucurrencyGenerator(i));
+            map.put("inamount", inamount);
+            map.put("outtype", typeOfCucurrencyGenerator(i+1));
+            map.put("outamount", outamount);
+            map.put("rate", inamount/outamount);
+            mylist.add(map);
+        }
+
+        SimpleAdapter mSchedule = new SimpleAdapter(getContext(), //没什么解释
+                mylist,//数据来源
+                R.layout.history_list_item,//ListItem的XML实现
+
+                //动态数组与ListItem对应的子项
+                new String[] {"intype", "inamount", "outtype", "outamount", "rate"},
+
+                //ListItem的XML文件里面的两个TextView ID
+                new int[] {R.id.intype,R.id.inamount, R.id.outtype, R.id.outamount, R.id.rate});
+        //添加并且显示
+        list.setAdapter(mSchedule);
+        return v;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -104,8 +95,27 @@ public class FragHistory extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
+
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+    //生成货币的种类
+    public String typeOfCucurrencyGenerator(int i){
+
+        if (i % 3 == 0)
+            return "CAD";
+        else if (i % 3 == 1)
+            return "RMB";
+        else if (i % 3 == 2)
+            return "USD";
+        else
+            return "FUCK";
+    }
+    //随机生成货币的数量
+    public int amountOfCucurrencyGenerator() {
+        Random random = new Random();
+        int amount = random.nextInt(10000) % (10000 - 10 + 1) + 10;
+        return amount;
     }
 }
