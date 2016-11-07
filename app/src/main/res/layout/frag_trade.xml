@@ -12,15 +12,26 @@
         <LinearLayout
             android:layout_gravity="center"
             android:layout_width="fill_parent"
-            android:layout_height="289dp"
+            android:layout_height="fill_parent"
             android:orientation="vertical"
             android:background="@color/windows_color">
-            <Spinner
-                android:id="@+id/spinner_intype"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                />
-
+                <LinearLayout
+                    android:layout_gravity="center"
+                   android:layout_width="fill_parent"
+                   android:layout_height="fill_parent"
+                   android:orientation="horizontal"
+                   android:background="@color/windows_color">
+                    <Spinner
+                        android:id="@+id/spinner_intype"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                    />
+                    <Spinner
+                         android:id="@+id/spinner_outtype"
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                    />
+            </LinearLayout>
             <Button
                 android:text="Trade"
                 android:layout_width="215dp"

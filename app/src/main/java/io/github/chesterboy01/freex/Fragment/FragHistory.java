@@ -21,7 +21,7 @@ public class FragHistory extends Fragment {
 //部署ultra-pull 下拉刷新
 
     private OnFragmentInteractionListener mListener;
-
+    View v;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,33 +31,45 @@ public class FragHistory extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.frag_history,container,false);
-        ListView list = (ListView) v.findViewById(R.id.lvContact);
-        ArrayList<HashMap<String, Object>> mylist = new ArrayList<HashMap<String, Object>>();
-        for(int i=0;i<30;i++)
-        {
-            HashMap<String, Object> map = new HashMap<String, Object>();
-            int inamount =  amountOfCucurrencyGenerator();
-            int outamount = amountOfCucurrencyGenerator();
-            map.put("intype", typeOfCucurrencyGenerator(i));
-            map.put("inamount", inamount);
-            map.put("outtype", typeOfCucurrencyGenerator(i+1));
-            map.put("outamount", outamount);
-            map.put("rate", inamount/outamount);
-            mylist.add(map);
+
+
+
+
+        if(v == null){
+            v = inflater.inflate(R.layout.frag_history,container,false);
+            ListView list = (ListView) v.findViewById(R.id.lvContact);
+            ArrayList<HashMap<String, Object>> mylist = new ArrayList<HashMap<String, Object>>();
+            for(int i=0;i<30;i++)
+            {
+                HashMap<String, Object> map = new HashMap<String, Object>();
+                int inamount =  amountOfCucurrencyGenerator();
+                int outamount = amountOfCucurrencyGenerator();
+                map.put("intype", typeOfCucurrencyGenerator(i));
+                map.put("inamount", inamount);
+                map.put("outtype", typeOfCucurrencyGenerator(i+1));
+                map.put("outamount", outamount);
+                map.put("rate", inamount/outamount);
+                mylist.add(map);
+            }
+
+            SimpleAdapter mSchedule = new SimpleAdapter(getContext(), //没什么解释
+                    mylist,//数据来源
+                    R.layout.history_list_item,//ListItem的XML实现
+
+                    //动态数组与ListItem对应的子项
+                    new String[] {"intype", "inamount", "outtype", "outamount", "rate"},
+
+                    //ListItem的XML文件里面的两个TextView ID
+                    new int[] {R.id.intype,R.id.inamount, R.id.outtype, R.id.outamount, R.id.rate});
+            //添加并且显示
+            list.setAdapter(mSchedule);
         }
-
-        SimpleAdapter mSchedule = new SimpleAdapter(getContext(), //没什么解释
-                mylist,//数据来源
-                R.layout.history_list_item,//ListItem的XML实现
-
-                //动态数组与ListItem对应的子项
-                new String[] {"intype", "inamount", "outtype", "outamount", "rate"},
-
-                //ListItem的XML文件里面的两个TextView ID
-                new int[] {R.id.intype,R.id.inamount, R.id.outtype, R.id.outamount, R.id.rate});
-        //添加并且显示
-        list.setAdapter(mSchedule);
+        else{
+            ViewGroup parent = (ViewGroup) v.getParent();
+            if (parent != null) {
+                parent.removeView(v);
+            }
+        }
         return v;
     }
 
