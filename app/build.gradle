@@ -28,6 +28,7 @@ dependencies {
     compile 'com.android.support:support-v4:23.+'
     compile 'com.google.android.gms:play-services-appindexing:8.4.0'
     compile 'net.sf.json-lib:json-lib:2.4:jdk15'
+    compile group: 'cz.msebera.android' , name: 'httpclient', version: '4.4.1.1'
 
 
 }

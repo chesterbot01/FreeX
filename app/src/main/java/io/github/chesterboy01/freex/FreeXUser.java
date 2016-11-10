@@ -37,7 +37,7 @@ public class FreeXUser {
         return freexuser.Email;
     }*/
     //我传给服务器还是byte[]，服务器那边从数据库里抽出加密的密码，两边同时解密完一起比对。
-    private String Encryption(String toBeEncrypted){
+    public static String Encryption(String toBeEncrypted){
         try {
             MessageDigest m = MessageDigest.getInstance("MD5");
             m.update(toBeEncrypted.getBytes(), 0,toBeEncrypted.length());
