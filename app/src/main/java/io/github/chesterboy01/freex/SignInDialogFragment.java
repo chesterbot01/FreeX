@@ -39,6 +39,9 @@ public class SignInDialogFragment extends DialogFragment {
              return new SignInDialogFragment();
          }*/
     //用于第一次连接的时候发送Json给服务器
+
+    boolean isTest = true;
+
     boolean result1 = false;
     boolean flag1 = false;
     //用于服务返回的时候允许登陆的flag
@@ -123,24 +126,33 @@ public class SignInDialogFragment extends DialogFragment {
                 l2.set(conUser);
                 l2.execute();
                 //System.out.println(result);
-                while(!flag1);
-                while(!flag2);
 
-                if (result1&&result2) {
-                    Toast.makeText(getActivity(), "登录成功", Toast.LENGTH_LONG).show();
 
-                    Toast.makeText(getActivity(),
-                            "用户名是" + conUser.getUsername() + " 密码是" + password,
-                            Toast.LENGTH_LONG).show();
-
+                if(isTest) {
                     Intent intent_toMain = new Intent(getActivity(), MainActivity.class);
                     ((FullscreenActivityBeforeLogin) getActivity()).startActivity(intent_toMain);
+                }
+                else{
 
-                } else {
-                    Toast.makeText(getActivity(), "登录失败", Toast.LENGTH_LONG).show();
+                    while (!flag1);
+                    while (!flag2);
+
+                    if (result1 && result2) {
+                        Toast.makeText(getActivity(), "登录成功", Toast.LENGTH_LONG).show();
+
+                        Toast.makeText(getActivity(),
+                                "用户名是" + conUser.getUsername() + " 密码是" + password,
+                                Toast.LENGTH_LONG).show();
+
+                        Intent intent_toMain = new Intent(getActivity(), MainActivity.class);
+                        ((FullscreenActivityBeforeLogin) getActivity()).startActivity(intent_toMain);
+
+                    } else {
+                        Toast.makeText(getActivity(), "登录失败", Toast.LENGTH_LONG).show();
+
+                    }
 
                 }
-
                 //Intent intent_toMain = new Intent(getActivity(),MainActivity.class);
                 //((FullscreenActivityBeforeLogin)getActivity()).startActivity(intent_toMain);
               /*  if (IsValidLogin(username,password)) {

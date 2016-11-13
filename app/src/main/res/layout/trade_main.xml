@@ -29,18 +29,20 @@
 
 
     <Spinner
-        android:id="@+id/spinner_intype"
+        android:id="@+id/spinner_outtype"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
+        android:layout_height="wrap_content"
+        android:entries="@array/currency_type"
+        android:inputType="number"/>
 
 
     <EditText
         android:id="@+id/amount_in"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textEmailAddress"
-        android:hint="Please enter the amount"/>
+        android:inputType="number"
+        android:hint="Please enter the amount"
+        android:digits="1234567890."/>
 
 
     <TextView
@@ -58,9 +60,11 @@
 
 
     <Spinner
-        android:id="@+id/spinner_outtype"
+        android:id="@+id/spinner_intype"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:entries="@array/currency_type"
+        android:inputType="number"
         />
 
 
@@ -69,8 +73,9 @@
         android:id="@+id/trade_rate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textEmailAddress"
-        android:hint="Enter the expected rate ..."/>
+        android:inputType="number"
+        android:hint="Enter the expected rate ..."
+        android:digits="1234567890."/>
 
 
 
@@ -87,6 +92,29 @@
         android:layout_marginBottom="31dp"
         android:id="@+id/textViewoutamount"
         android:textAppearance="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Large" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:text="Scan QR"
+            android:layout_width="189dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/gen_or_scan_button" />
+
+        <Button
+            android:text="Submit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/button3" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"></LinearLayout>
+    </LinearLayout>
 
 
 </LinearLayout>

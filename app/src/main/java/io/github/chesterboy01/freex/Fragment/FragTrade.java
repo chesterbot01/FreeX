@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import io.github.chesterboy01.freex.R;
+import io.github.chesterboy01.freex.dialog.TradeMainDialog;
 
 
 public class FragTrade extends Fragment implements View.OnClickListener {
@@ -80,22 +81,31 @@ public class FragTrade extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
+        TradeMainDialog dialog = new TradeMainDialog();
+
         switch (v.getId()) {
             case R.id.button_deposit:// 朋友圈
                 //Utils.start_Activity(getActivity(), AlbumActivity.class);
-
+                dialog.setType(TradeMainDialog.DEPOSIT);
+                dialog.show(getFragmentManager(), "trade_deposit");
                 break;
             case R.id.button_withdrawl:// 扫一扫
                 //Utils.start_Activity(getActivity(), CaptureActivity.class);
 
+                dialog.setType(TradeMainDialog.WITHDRAWL);
+                dialog.show(getFragmentManager(), "trade_withdrawl");
                 break;
             case R.id.button_buy:
                /* Utils.start_Activity(getActivity(), PublicActivity.class,
                         new BasicNameValuePair(Constants.NAME, getString(R.string.shake)));*/
+                dialog.setType(TradeMainDialog.BUY);
+                dialog.show(getFragmentManager(), "trade_buy");
                 break;
             case R.id.button_sell:
                 /*Utils.start_Activity(getActivity(), PublicActivity.class,
                         new BasicNameValuePair(Constants.NAME, getString(R.string.people_nearby)));*/
+                dialog.setType(TradeMainDialog.SELL);
+                dialog.show(getFragmentManager(), "trade_sell");
                 break;
             default:
                 break;
