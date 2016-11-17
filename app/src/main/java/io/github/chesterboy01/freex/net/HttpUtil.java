@@ -22,7 +22,10 @@ public class HttpUtil {
     //声明Base URL常量
     //public static final String BASE_URL = "http://192.168.95.1:8080/FreeX_Server/login.action";
     //public static final String BASE_URL = "http://127.0.0.1:8080/FreeX_Server/text.action";
-    public static final String BASE_URL = "http://10.0.2.2:8080/FreeX_Server/text.action";
+    //public static final String BASE_URL = "http://10.0.2.2:8080/FreeX_Server/text.action";
+    //public static final String BASE_URL = R.strings.base_url+"login.action";
+    public static final String BASE_URL = "http://192.168.95.1:8080/FreeX_Server/login.action";
+
     //通过URL获得HttpGet对象
     public static HttpGet getHttpGet(String url){
         //实例化HttpGet
@@ -80,19 +83,8 @@ public class HttpUtil {
 
     //通过URL发送post请求，返回请求结果
     public static String queryStringForPost(String url, User user) throws JSONException {
-        //获得HttpPost实例
-        /*URL url_new;
-        HttpURLConnection urlConnection = null;
-        try {
-            url_new = new URL(url);
-            urlConnection = (HttpURLConnection) url_new.openConnection();
-            InputStream in = urlConnection.getInputStream();
-            InputStream isw = new InputStreamReader(in);
-        }*/
 
         HttpPost request = HttpUtil.getHttpPost(url);
-
-
 
         String result = null;
         try{

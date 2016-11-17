@@ -3,6 +3,7 @@ package io.github.chesterboy01.freex;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
@@ -12,8 +13,20 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import static io.github.chesterboy01.freex.FullscreenActivityBeforeLogin.communication;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import io.github.chesterboy01.freex.entity.User;
+import io.github.chesterboy01.freex.net.HttpUtil;
+
 import static io.github.chesterboy01.freex.R.layout.signup_fragment;
 import static io.github.chesterboy01.freex.RegularExpressionEmailAddress.isEmailAddressMatched;
 
@@ -29,6 +42,9 @@ public class SignUpDialogFragment extends DialogFragment {
     public static boolean isEmailValid = false;
     public static boolean isUserNameValid = false;
     public static boolean isPasswordValid = false;
+
+    boolean result_signup = false;
+    boolean flag_signup = false;
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -146,14 +162,28 @@ public class SignUpDialogFragment extends DialogFragment {
                 String username_signup = tv22.getText().toString();
                 String password_signup_1 = tv23.getText().toString();
                 String password_signup_2 = tv24.getText().toString();
+
+                User current_user = new User();
+                current_user.setEmail(useremail);
+                current_user.setPassword(password_signup_2);
+                current_user.setUsername(username_signup);
+                new LoginAsyncSignUp().execute(current_user);
+
+                while(!flag_signup);
+
+                if (result_signup == true)
+                    Toast.makeText(getActivity(), "注册成功！", Toast.LENGTH_LONG).show();
+                else
+                    Toast.makeText(getActivity(), "失败", Toast.LENGTH_LONG).show();
+
+                dismiss();
                 //if (!password_signup_2.equals(password_signup_1)) {
                     //Toast.makeText(getActivity(), "Password is not consistent, please try again", Toast.LENGTH_LONG).show();
                     //dismiss();
                     //SignUpDialogFragment dialog_signup = new SignUpDialogFragment();
                     //dialog_signup.show(getFragmentManager(), "signupDialog");
                 //} else {
-                new FreeXUser(username_signup, useremail, password_signup_1);
-                communication();
+
 
                 //}
             }
@@ -166,64 +196,62 @@ public class SignUpDialogFragment extends DialogFragment {
                 //要remove dialog fragment from activity的话
                 // dismiss()函数才是有效的，onDestroy()和
                 // getFragmentManager.remove(...).commit()根本不管用
+
                 dismiss();
             }
         });
 
 
         return builder.setView(view).create();
-        // Inflate and set the layout for the dialog
-        // Pass null as the parent view because its going in the dialog layout
-        /*builder.setView(view)
-                // Add action buttons
-                .setPositiveButton("Start Trading!",
+    }
+    public class LoginAsyncSignUp extends AsyncTask<User, Void, Boolean> {
+        protected void onPreExecute() {
 
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int id) {
-                                //获取输入的信息
-                                String useremail = tv21.getText().toString();
-                                String username_signup = tv22.getText().toString();
-                                String password_signup_1 = tv23.getText().toString();
-                                String password_signup_2 = tv24.getText().toString();
-                                if (!password_signup_2.equals(password_signup_1)) {
-                                    Toast.makeText(getActivity(), "Password is not consistent, please try again", Toast.LENGTH_LONG).show();
-                                    onDestroy();
-                                    SignUpDialogFragment dialog_signup = new SignUpDialogFragment();
-                                    dialog_signup.show(getFragmentManager(), "signupDialog");
-                                } else {
-                                    new FreeXUser(username_signup, useremail, password_signup_1);
-                                    communication();
-
-                                }
-                            }
-                        })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        onDestroy();
+        }
+        protected Boolean doInBackground(User... params) {
+            //params[0]就是我要传进来的user对象
+            try {
+                String URL = HttpUtil.BASE_URL;
+                String result = null;
+                HttpPost request = HttpUtil.getHttpPost(URL);
+                try{
+                    JSONObject json = new JSONObject();
+                    json.put("username",params[0].getUsername());
+                    json.put("password",params[0].getPassword());
+                    json.put("email",params[0].getEmail());
+                    StringEntity se = new StringEntity(json.toString(),"utf-8");
+                    request.setEntity(se);
+                    HttpResponse response = HttpUtil.getHttpResponse(request);
+                    int code = response.getStatusLine().getStatusCode();
+                    if (code == 200){
+                        result = EntityUtils.toString(response.getEntity());
                     }
-                });
-        tv21.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(!isEmailAddressMatched(tv21.getText().toString())){
-
                 }
-                else{}
+                catch(ClientProtocolException e){
+                    e.printStackTrace();
+                    result = "ClientProtocolException:network is not available";
+                }
+                catch(IOException e) {
+                    e.printStackTrace();
+                    result = "IOException:network is not available";
+                }
+
+                if (result.equals("RegisterFail"))
+                    result_signup = false;
+                else{
+                    JSONObject obj = new JSONObject(result);
+                    if (obj.getInt("uid") > 0) {
+                        result_signup = true;
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-        return builder.create();*/
-
+            flag_signup = true;
+            return result_signup;
+        }
+        protected void onPostExecute(Boolean... params) {
+        }
     }
 }

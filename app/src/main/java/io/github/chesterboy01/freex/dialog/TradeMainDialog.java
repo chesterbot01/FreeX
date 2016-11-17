@@ -17,9 +17,6 @@ import android.widget.Toast;
 import io.github.chesterboy01.freex.R;
 import io.github.chesterboy01.freex.entity.Transaction_history;
 
-import static io.github.chesterboy01.freex.R.id.textViewoutamount;
-import static io.github.chesterboy01.freex.R.id.trade_main_type_title;
-
 /**
  * Created by Administrator on 11/10/2016.
  */
@@ -44,6 +41,10 @@ public class TradeMainDialog extends DialogFragment {
     EditText tradeRate;
     Button submitButton;
     Button QRcodeGenOrScan;
+
+    String inputRate;
+    double currentRate;
+    double currentAmount;
 
 
     public void setType(int type){
@@ -142,23 +143,61 @@ public class TradeMainDialog extends DialogFragment {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //保证每按一次都生成一个交易，
+                //那个全局的singleTransaction只是一个tmp
+                Transaction_history tranNew = new Transaction_history();
+
                 switch(typeOfTransaction){
                     case DEPOSIT:
+                        //先获取able控件的值
+                        //给服务器发送数据的时候不要解析，String就是String, 别转成double
+                        singleTransaction.setThamount(inAmount.getText().toString());
+
+                        tranNew.setCidin(singleTransaction.getCidin());
+                        tranNew.setThamount(singleTransaction.getThamount());
+                        //userid之类的别忘了设置
+                        //然后向服务器发送数据
 
                         Toast.makeText(getActivity(), "Deposit is done",
                                 Toast.LENGTH_LONG).show();
                         break;
                     case WITHDRAWL:
+                        singleTransaction.setThamount(inAmount.getText().toString());
+
+                        tranNew.setCidout(singleTransaction.getCidout());
+                        tranNew.setThamount(singleTransaction.getThamount());
+
+                        //userid之类的别忘了设置
+                        //然后向服务器发送数据
 
                         Toast.makeText(getActivity(), "Withdrawl is done",
                                 Toast.LENGTH_LONG).show();
                         break;
                     case BUY:
+                        singleTransaction.setThamount(inAmount.getText().toString());
+
+                        tranNew.setCidin(singleTransaction.getCidin());
+                        tranNew.setCidout(singleTransaction.getCidout());
+                        tranNew.setThamount(singleTransaction.getThamount());
+
+                        //userid之类的别忘了设置
+                        //然后向服务器发送数据
+
 
                         Toast.makeText(getActivity(), "Buy is done",
                                 Toast.LENGTH_LONG).show();
                         break;
                     case SELL:
+                        singleTransaction.setThamount(inAmount.getText().toString());
+                        singleTransaction.setRate(tradeRate.getText().toString());
+
+                        tranNew.setCidin(singleTransaction.getCidin());
+                        tranNew.setCidout(singleTransaction.getCidout());
+                        tranNew.setThamount(singleTransaction.getThamount());
+                        tranNew.setRate(singleTransaction.getRate());
+                        //用户指定的汇率服务器接受吗？
+                        //userid之类的别忘了设置
+                        //然后向服务器发送数据
 
                         Toast.makeText(getActivity(), "Sell is done",
                                 Toast.LENGTH_LONG).show();
@@ -188,6 +227,13 @@ public class TradeMainDialog extends DialogFragment {
                 }
             }
         });
+
+        inputRate = tradeRate.getText().toString();
+        if (inputRate.matches("")) {
+            currentRate = Double.parseDouble(inputRate);
+        }
+        else
+            currentRate = 6.82;
 
         return builder.setView(view).create();
     }
@@ -233,4 +279,6 @@ public class TradeMainDialog extends DialogFragment {
         //submitButton.setEnabled(false);
         QRcodeGenOrScan.setEnabled(false);
     }
+
+
 }

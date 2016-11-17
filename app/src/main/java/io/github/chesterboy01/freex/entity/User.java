@@ -5,8 +5,6 @@ package io.github.chesterboy01.freex.entity;
 
 import java.io.Serializable;
 
-import io.github.chesterboy01.freex.FreeXUser;
-
 /**
  * @ClassName: User.java
  * @Description: User entity
@@ -53,7 +51,8 @@ public class User implements Serializable {
 
 	public String getPassword() {
 		//返回加密以后的密码
-		return FreeXUser.Encryption(password);
+		//return FreeXUser.Encryption(password);
+		return password;
 	}
 
 	public void setPassword(String password) {
