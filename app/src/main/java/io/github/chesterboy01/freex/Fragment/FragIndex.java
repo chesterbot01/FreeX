@@ -4,133 +4,133 @@ import android.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import io.github.chesterboy01.freex.R;
-
+import io.github.chesterboy01.freex.UserPass;
+import io.github.chesterboy01.freex.entity.User;
 
 
 public class FragIndex extends Fragment {
+
     private ListView lview;
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    //private static final String ARG_PARAM1 = "param1";
-    //private static final String ARG_PARAM2 = "param2";
+    public UserPass mListener;
+    User conUser;
 
-    // TODO: Rename and change types of parameters
-    //private String mParam1;
-    //private String mParam2;
+    EditText cadInput;
+    EditText rmbInput;
+    EditText usdInput;
 
-
-    //private OnFragmentInteractionListener mListener;
+    double rmb_cad = 5.12;
+    double rmb_usd = 6.87;
 
     public FragIndex() {
-        // Required empty public constructor
+
     }
-
-
-    // TODO: Rename and change types and number of parameters
-    /*public static FragIndex newInstance(String param1, String param2) {
-        FragIndex fragment = new FragIndex();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }*/
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        /*if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }*/
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-       View v = inflater.inflate(R.layout.frag_index,container,false);
-       lview = (ListView) v.findViewById(R.id.listview);
-        /* TextView textView = new TextView(getActivity());
-        textView.setText(R.string.hello_blank_fragment);
-        return textView;*/
+        View v = inflater.inflate(R.layout.frag_index,container,false);
+        conUser = mListener.getUser();
+
+        cadInput = (EditText) v.findViewById(R.id.cad_calculator);
+        rmbInput = (EditText) v.findViewById(R.id.rmb_calculator);
+        usdInput = (EditText) v.findViewById(R.id.usd_calculator);
+
+        cadInput.addTextChangedListener(new TextWatcher(){
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+            @Override
+            public void afterTextChanged(Editable s){
+                String usdAmount = usdInput.getText().toString();
+                if(!usdAmount.matches("")){
+                    double usdAmountDouble = Double.parseDouble(usdAmount);
+                    cadInput.setText(new String(new Double(usdAmountDouble/rmb_usd*rmb_cad).toString()));
+                }
+            }
+        });
+
+        rmbInput.addTextChangedListener(new TextWatcher(){
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+            @Override
+            public void afterTextChanged(Editable s){
+                String usdAmount = usdInput.getText().toString();
+                if(!usdAmount.matches("")){
+                    double usdAmountDouble = Double.parseDouble(usdAmount);
+                    rmbInput.setText(new String(new Double(usdAmountDouble*rmb_usd).toString()));
+                }
+            }
+        });
+
+        usdInput.addTextChangedListener(new TextWatcher(){
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+            @Override
+            public void afterTextChanged(Editable s){
+                String cadAmount = cadInput.getText().toString();
+                if(!cadAmount.matches("")){
+                    double cadAmountDouble = Double.parseDouble(cadAmount);
+                    usdInput.setText(new String(new Double(cadAmountDouble/rmb_cad*rmb_usd).toString()));
+                }
+            }
+        });
+
         return v;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    /*public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }*/
-
     @Override
     public void onAttach(Context context) {
+        //从MainActivity中获取
         super.onAttach(context);
-        /*if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }*/
+        if(context instanceof UserPass){
+            //对传递进来的Activity进行接口转换
+            mListener = ((UserPass) context);
+        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
+        mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
+
         void onFragmentInteraction(Uri uri);
     }
 
-
-
     public void refresh() {
-        //conversationList.clear();
+
         initViews();
     }
 
     private void initViews() {
-       /* conversationList.addAll(loadConversationsWithRecentChat());
-        if (conversationList != null && conversationList.size() > 0) {
-            layout.findViewById(R.id.txt_nochat).setVisibility(View.GONE);
-            adpter = new NewMsgAdpter(getActivity(), conversationList);
-            // TODO 加载订阅号信息 ，增加一个Item
-            // if (GloableParams.isHasPulicMsg) {
-            EMConversation nee = new EMConversation("100000");
-            conversationList.add(0, nee);
-            String time = Utils.getValue(getActivity(), "Time");
-            String content = Utils.getValue(getActivity(), "Content");
-            time = "下午 02:45";
-            content = "[腾讯娱乐] 赵薇炒股日赚74亿";
-            PublicMsgInfo msgInfo = new PublicMsgInfo();
-            msgInfo.setContent(content);
-            msgInfo.setMsg_ID("12");
-            msgInfo.setTime(time);
-            adpter.setPublicMsg(msgInfo);
-            // }
-            lvContact.setAdapter(adpter);
-        } else {
-            layout.findViewById(R.id.txt_nochat).setVisibility(View.VISIBLE);
-        }
-    }*/
 
     }
 }

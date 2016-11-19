@@ -10,33 +10,19 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import io.github.chesterboy01.freex.R;
+import io.github.chesterboy01.freex.UserPass;
 import io.github.chesterboy01.freex.dialog.TradeMainDialog;
+import io.github.chesterboy01.freex.entity.User;
 
 
 public class FragTrade extends Fragment implements View.OnClickListener {
-
-//自动要disable一个已选的币种
-
-   // private static Integer[] imageIconDatabase =
-          //  {R.drawable.cadsymbol, R.drawable.rmbsymbol, R.drawable.usdsymbol};
+    public UserPass mListener;
+    User conUser;
+    TradeMainDialog dialog;
 
     private String[] imageNameDatabase
             = new String[] {"CAD", "RMB", "USD"};
 
-    //List<Map<String, Object>> spinnerList = new ArrayList<>();
-   /* private void initializeImageList() {
-        // TODO Auto-generated method stub
-        for (int i = 0; i < imageNameDatabase.length; i++) {
-            Map<String, Object>  map = new HashMap<String, Object>();
-
-            map.put("Name", imageNameDatabase[i]);
-            map.put("Icon", imageIconDatabase[i]);
-            spinnerList.add(map);
-        }
-        ImageView imageView = new ImageView(getContext());
-        imageView.setBackgroundResource((Integer) spinnerList.get(0).get("Icon"));
-        spinnerList.get(0).get("Name");
-    }*/
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,14 +33,16 @@ public class FragTrade extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
         View v = inflater.inflate(R.layout.frag_trade,container,false);
+        conUser = mListener.getUser();
        // initializeImageList();
         Button button_deposit = (Button) v.findViewById(R.id.button_deposit);
         Button button_withdrawl = (Button) v.findViewById(R.id.button_withdrawl);
         Button button_buy = (Button) v.findViewById(R.id.button_buy);
         Button button_sell = (Button) v.findViewById(R.id.button_sell);
 
+        dialog = new TradeMainDialog();
+        dialog.setUser(conUser); //传入用户信息
 
 
         button_deposit.setOnClickListener(this);
@@ -62,48 +50,27 @@ public class FragTrade extends Fragment implements View.OnClickListener {
         button_buy.setOnClickListener(this);
         button_sell.setOnClickListener(this);
 
-
-       /* Spinner s = (Spinner) v.findViewById(R.id.spinner_intype);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
-                android.R.layout.simple_spinner_item, imageNameDatabase);
-        s.setAdapter(adapter);*/
-
-        /*Spinner spin = (Spinner) v.findViewById(R.id.spinner_intype);
-        CustomSpinnerAdapter adapter = new CustomSpinnerAdapter(getContext(),
-                spinnerList, R.layout.row, new String[] { "Name",
-                "Icon" }, new int[] { R.id.weekofday,
-                R.id.spinner_icon });
-        spin.setAdapter(adapter);*/
-        //选完第一个后，enable第二个spinner，最好有textview显示选了哪个币种
         return v;
-
     }
 
     @Override
     public void onClick(View v) {
-        TradeMainDialog dialog = new TradeMainDialog();
+
 
         switch (v.getId()) {
-            case R.id.button_deposit:// 朋友圈
-                //Utils.start_Activity(getActivity(), AlbumActivity.class);
+            case R.id.button_deposit:
                 dialog.setType(TradeMainDialog.DEPOSIT);
                 dialog.show(getFragmentManager(), "trade_deposit");
                 break;
-            case R.id.button_withdrawl:// 扫一扫
-                //Utils.start_Activity(getActivity(), CaptureActivity.class);
-
+            case R.id.button_withdrawl:
                 dialog.setType(TradeMainDialog.WITHDRAWL);
                 dialog.show(getFragmentManager(), "trade_withdrawl");
                 break;
             case R.id.button_buy:
-               /* Utils.start_Activity(getActivity(), PublicActivity.class,
-                        new BasicNameValuePair(Constants.NAME, getString(R.string.shake)));*/
                 dialog.setType(TradeMainDialog.BUY);
                 dialog.show(getFragmentManager(), "trade_buy");
                 break;
             case R.id.button_sell:
-                /*Utils.start_Activity(getActivity(), PublicActivity.class,
-                        new BasicNameValuePair(Constants.NAME, getString(R.string.people_nearby)));*/
                 dialog.setType(TradeMainDialog.SELL);
                 dialog.show(getFragmentManager(), "trade_sell");
                 break;
@@ -115,13 +82,17 @@ public class FragTrade extends Fragment implements View.OnClickListener {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        if(context instanceof UserPass){
+            //对传递进来的Activity进行接口转换
+            mListener = ((UserPass) context);
+        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
+        mListener = null;
     }
-
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name

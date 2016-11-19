@@ -1,6 +1,7 @@
 package io.github.chesterboy01.freex;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -15,9 +16,10 @@ import io.github.chesterboy01.freex.Fragment.FragTrade;
 import io.github.chesterboy01.freex.Fragment.FragUser;
 import io.github.chesterboy01.freex.dialog.ActionItem;
 import io.github.chesterboy01.freex.dialog.TitlePopup;
+import io.github.chesterboy01.freex.entity.User;
 
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, FragIndex.OnFragmentInteractionListener,FragHistory.OnFragmentInteractionListener,FragTrade.OnFragmentInteractionListener,FragUser.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements UserPass,View.OnClickListener, FragIndex.OnFragmentInteractionListener,FragHistory.OnFragmentInteractionListener,FragTrade.OnFragmentInteractionListener,FragUser.OnFragmentInteractionListener {
     private Fragment[] fragmentArray;
     private TextView txt_title;
     private ImageView img_right;
@@ -32,11 +34,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int index;
     private int currentTabIndex;
 
+    User conUser;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Intent intent = this.getIntent();
+        conUser = (User)intent.getSerializableExtra("user");
 
         txt_title = (TextView) findViewById(R.id.txt_title);
         img_right = (ImageView) findViewById(R.id.img_right);
@@ -179,7 +185,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-
+    @Override
+    public User getUser(){
+        return conUser;
+    }
 
     @Override
     public void onFragmentInteraction(Uri uri) {

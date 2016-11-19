@@ -23,7 +23,7 @@ public class loginProtocol {
             //格式是http://192.168.95.1:8080/FreeX_Server/login.action?user.username=123&user.password=123   ?是第一个参数 &是第二个参数
             //String queryString = "?user.username=" + user.getUsername() + "&user.password=" + user.getPassword();
 
-            String URL = "http://192.168.95.1:8080/FreeX_Server/signup.action";
+            String URL = "http://192.168.95.1:8080/FreeX_Server/login.action";
             //就这一句话就把向服务器查询和返回的数据全部要回来了
             String result = HttpUtil.queryStringForPost(URL,user);
             //读取服务器返回的json数据

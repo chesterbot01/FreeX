@@ -12,10 +12,8 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Menu"
         android:layout_width="match_parent" />
 
-
-
     <TextView
-        android:text="Choose your holding currency type to sell:"
+        android:text="Choose your holding currency type:"
         android:layout_height="wrap_content"
         android:layout_above="@+id/button2"
         android:layout_toRightOf="@+id/textView"
@@ -67,8 +65,6 @@
         android:inputType="number"
         />
 
-
-
     <EditText
         android:id="@+id/trade_rate"
         android:layout_width="match_parent"
@@ -78,20 +74,38 @@
         android:digits="1234567890."/>
 
 
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:weightSum="1">
 
+        <TextView
+            android:text="Expected amount ="
+            android:layout_width="145dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="0dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="11dp"
+            android:id="@+id/textViewoutamount1"
+            android:textAppearance="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Large"
+            android:layout_weight="0.25" />
 
-    <TextView
-        android:text="// amount in*rate = amount out"
+        <TextView
+        android:text="amount in*rate = amount out"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/button2"
         android:layout_toRightOf="@+id/textView"
         android:layout_toEndOf="@+id/textView"
-        android:layout_marginLeft="38dp"
-        android:layout_marginStart="38dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginBottom="31dp"
-        android:id="@+id/textViewoutamount"
+        android:id="@+id/textViewoutamount2"
         android:textAppearance="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Large" />
+
+    </LinearLayout>
+
 
     <LinearLayout
         android:orientation="horizontal"

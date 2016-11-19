@@ -1,5 +1,7 @@
 package io.github.chesterboy01.freex.net;
 
+import android.util.Log;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
@@ -92,7 +94,7 @@ public class HttpUtil {
             //Log.v("usersresr",user.getUsername());
             json.put("username",user.getUsername());
             json.put("password",user.getPassword());
-            //Log.v("json",json.toString());
+            Log.v("json",json.toString());
             StringEntity se = new StringEntity(json.toString(),"utf-8");
             request.setEntity(se);
             //获得HttpResponse实例
@@ -102,7 +104,7 @@ public class HttpUtil {
             if (code == 200){
                 //获得返回结果
                 result = EntityUtils.toString(response.getEntity());
-                //Log.v("codessss",result);
+                Log.v("codessss",result);
                 return result;
             }
         }

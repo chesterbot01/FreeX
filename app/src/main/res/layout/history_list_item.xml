@@ -7,31 +7,112 @@
     android:id="@+id/MyListItem"
     android:paddingBottom="3dip"
     android:paddingLeft="10dip">
-    <TextView
-        android:layout_height="wrap_content"
-        android:layout_width="fill_parent"
-        android:id="@+id/intype"
-        android:textSize="30dip">
-    </TextView>
-    <TextView
-        android:layout_height="wrap_content"
-        android:layout_width="fill_parent"
-        android:id="@+id/inamount">
-    </TextView>
 
-    <TextView
-        android:layout_height="wrap_content"
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:id="@+id/outtype">
-    </TextView>
-    <TextView
-        android:layout_height="wrap_content"
-        android:layout_width="fill_parent"
-        android:id="@+id/outamount">
-    </TextView>
-    <TextView
-        android:layout_height="wrap_content"
-        android:layout_width="fill_parent"
-        android:id="@+id/rate">
-    </TextView>
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.3">
+            <TextView
+                android:text="InType"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:id="@+id/intype_announcement"
+                android:textColor="#000000">
+            </TextView>
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:id="@+id/intype"
+                android:textColor="#000000">
+            </TextView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+            <TextView
+                android:text="InAmount"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:id="@+id/inamount_announcement"
+                android:textColor="#000000">
+            </TextView>
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:id="@+id/inamount"
+                android:textColor="#000000">
+            </TextView>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.3">
+            <TextView
+                android:text="OutType"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:id="@+id/outtype_announcement"
+                android:textColor="#000000">
+            </TextView>
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:id="@+id/outtype"
+                android:textColor="#000000">
+            </TextView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+            <TextView
+                android:text="OutAmount"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:id="@+id/outamount_announcement"
+                android:textColor="#000000">
+            </TextView>
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:id="@+id/outamount"
+                android:textColor="#000000">
+            </TextView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.2">
+            <TextView
+                android:text="Rate"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:id="@+id/rate_announcement"
+                android:textColor="#000000">
+            </TextView>
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:id="@+id/rate"
+                android:textColor="#000000">
+            </TextView>
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

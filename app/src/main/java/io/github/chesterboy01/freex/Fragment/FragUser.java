@@ -10,13 +10,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import io.github.chesterboy01.freex.R;
+import io.github.chesterboy01.freex.UserPass;
+import io.github.chesterboy01.freex.entity.User;
 
 
 public class FragUser extends Fragment {
 
-
-
-
+    public UserPass mListener;
+    User conUser;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -29,6 +30,7 @@ public class FragUser extends Fragment {
                              Bundle savedInstanceState) {
         TextView textView = new TextView(getActivity());
         textView.setText(R.string.hello_blank_fragment);
+        conUser = mListener.getUser();
         return textView;
     }
 
@@ -37,11 +39,16 @@ public class FragUser extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        if(context instanceof UserPass){
+            //对传递进来的Activity进行接口转换
+            mListener = ((UserPass) context);
+        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
+        mListener = null;
     }
 
 

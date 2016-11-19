@@ -15,12 +15,15 @@ import java.util.HashMap;
 import java.util.Random;
 
 import io.github.chesterboy01.freex.R;
+import io.github.chesterboy01.freex.UserPass;
+import io.github.chesterboy01.freex.entity.User;
 
 
 public class FragHistory extends Fragment {
 //部署ultra-pull 下拉刷新
 
-    private OnFragmentInteractionListener mListener;
+    public UserPass mListener;
+    User conUser;
     View v;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -32,23 +35,22 @@ public class FragHistory extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-
-
-
         if(v == null){
             v = inflater.inflate(R.layout.frag_history,container,false);
+            conUser = mListener.getUser();
             ListView list = (ListView) v.findViewById(R.id.lvContact);
             ArrayList<HashMap<String, Object>> mylist = new ArrayList<HashMap<String, Object>>();
             for(int i=0;i<30;i++)
             {
                 HashMap<String, Object> map = new HashMap<String, Object>();
-                int inamount =  amountOfCucurrencyGenerator();
-                int outamount = amountOfCucurrencyGenerator();
+                float inamount =  amountOfCucurrencyGenerator();
+                float outamount = amountOfCucurrencyGenerator();
                 map.put("intype", typeOfCucurrencyGenerator(i));
                 map.put("inamount", inamount);
                 map.put("outtype", typeOfCucurrencyGenerator(i+1));
                 map.put("outamount", outamount);
-                map.put("rate", inamount/outamount);
+                //减少rate的显示位数，使用float类型
+                map.put("rate", (float)inamount/outamount);
                 mylist.add(map);
             }
 
@@ -73,21 +75,16 @@ public class FragHistory extends Fragment {
         return v;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
+
     public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+        if(context instanceof UserPass){
+            //对传递进来的Activity进行接口转换
+            mListener = ((UserPass) context);
         }
     }
 
@@ -96,17 +93,6 @@ public class FragHistory extends Fragment {
         super.onDetach();
         mListener = null;
     }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
@@ -125,9 +111,10 @@ public class FragHistory extends Fragment {
             return "FUCK";
     }
     //随机生成货币的数量
-    public int amountOfCucurrencyGenerator() {
+    public float amountOfCucurrencyGenerator() {
         Random random = new Random();
         int amount = random.nextInt(10000) % (10000 - 10 + 1) + 10;
-        return amount;
+        float result = (float)(amount/1.0);
+        return result;
     }
 }

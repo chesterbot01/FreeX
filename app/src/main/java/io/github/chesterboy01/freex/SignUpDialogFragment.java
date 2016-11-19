@@ -211,7 +211,7 @@ public class SignUpDialogFragment extends DialogFragment {
         protected Boolean doInBackground(User... params) {
             //params[0]就是我要传进来的user对象
             try {
-                String URL = HttpUtil.BASE_URL;
+                String URL = "http://192.168.95.1:8080/FreeX_Server/register.action";
                 String result = null;
                 HttpPost request = HttpUtil.getHttpPost(URL);
                 try{

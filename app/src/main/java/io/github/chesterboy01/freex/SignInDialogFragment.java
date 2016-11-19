@@ -132,7 +132,12 @@ public class SignInDialogFragment extends DialogFragment {
                                 Toast.LENGTH_LONG).show();
 
                         Intent intent_toMain = new Intent(getActivity(), MainActivity.class);
-                        ((FullscreenActivityBeforeLogin) getActivity()).startActivity(intent_toMain);
+                        //把要传的对象放到bundle里通过intent传进MainActivity中
+                        Bundle bundle= new Bundle();
+                        bundle.putSerializable("user", conUser);
+                        intent_toMain.putExtras(bundle);
+
+                        (getActivity()).startActivity(intent_toMain);
 
                     } else {
                         Toast.makeText(getActivity(), "登录失败", Toast.LENGTH_LONG).show();
@@ -151,7 +156,6 @@ public class SignInDialogFragment extends DialogFragment {
         protected Boolean doInBackground(User... params) {
             //params[0]就是我要传进来的user对象
             login = new loginProtocol(params[0]);
-            //result1 = login.checkLogin(params[0]);
             result1 = login.checkLogin(params[0]);
             flag1 = true;
 
