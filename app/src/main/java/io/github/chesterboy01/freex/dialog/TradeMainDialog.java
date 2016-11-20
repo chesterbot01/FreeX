@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -132,7 +133,7 @@ public class TradeMainDialog extends DialogFragment {
                         singleTransaction.setCidin(3);
                         break;
                     default:
-                        singleTransaction.setCidin(3);
+                        singleTransaction.setCidin(1);
                         break;
                 }
 
@@ -162,7 +163,7 @@ public class TradeMainDialog extends DialogFragment {
                         singleTransaction.setCidout(3);
                         break;
                     default:
-                        singleTransaction.setCidout(3);
+                        singleTransaction.setCidout(1);
                         break;
                 }
 
@@ -469,7 +470,7 @@ public class TradeMainDialog extends DialogFragment {
             //params[0]就是我要传进来的Transaction_history对象
             String result;
             try {
-                String URL = "http://192.168.95.1:8080/FreeX_Server/withdrawl.action";
+                String URL = "http://192.168.95.1:8080/FreeX_Server/withdrawal.action";
                 result = null;
                 HttpPost request = HttpUtil.getHttpPost(URL);
                 try{
@@ -494,8 +495,10 @@ public class TradeMainDialog extends DialogFragment {
                     result = "IOException:network is not available";
                 }
 
-                if (result.equals("WithdrawlFail"))
+                if (result.equals("WithdrawalFail")) {
                     result_withdrawl = false;
+                    Log.v("余额不足","fwewfwfwfewf");
+                }
                 else{
                     JSONObject obj = new JSONObject(result);
                     if (obj.getInt("buid") > 0) {
@@ -631,6 +634,5 @@ public class TradeMainDialog extends DialogFragment {
         protected void onPostExecute(Boolean... params) {
         }
     }
-
 
 }

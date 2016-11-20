@@ -29,7 +29,7 @@ public class SignInDialogFragment extends DialogFragment {
          }*/
     //用于第一次连接的时候发送Json给服务器
 
-    boolean isTest = false;
+    boolean isTest = true;
 
     boolean result1 = false;
     boolean flag1 = false;

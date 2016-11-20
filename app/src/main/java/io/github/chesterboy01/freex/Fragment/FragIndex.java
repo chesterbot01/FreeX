@@ -50,6 +50,7 @@ public class FragIndex extends Fragment {
         rmbInput = (EditText) v.findViewById(R.id.rmb_calculator);
         usdInput = (EditText) v.findViewById(R.id.usd_calculator);
 
+
         cadInput.addTextChangedListener(new TextWatcher(){
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -59,10 +60,17 @@ public class FragIndex extends Fragment {
             }
             @Override
             public void afterTextChanged(Editable s){
-                String usdAmount = usdInput.getText().toString();
-                if(!usdAmount.matches("")){
-                    double usdAmountDouble = Double.parseDouble(usdAmount);
-                    cadInput.setText(new String(new Double(usdAmountDouble/rmb_usd*rmb_cad).toString()));
+                //一个为焦点的时候，更新另外两个的值
+                if (cadInput.isFocused() == true) {
+                    String cadAmount = cadInput.getText().toString();
+                    //判断是否为空
+                    if (!cadAmount.matches("")) {
+                        double cadAmountDouble = Double.parseDouble(cadAmount);
+                        double rmbAmountDouble = cadAmountDouble * 5.10;
+                        double usdAmountDouble = cadAmountDouble * 1.35;
+                        rmbInput.setText(Double.toString(rmbAmountDouble));
+                        usdInput.setText(Double.toString(usdAmountDouble));
+                    }
                 }
             }
         });
@@ -76,10 +84,17 @@ public class FragIndex extends Fragment {
             }
             @Override
             public void afterTextChanged(Editable s){
-                String usdAmount = usdInput.getText().toString();
-                if(!usdAmount.matches("")){
-                    double usdAmountDouble = Double.parseDouble(usdAmount);
-                    rmbInput.setText(new String(new Double(usdAmountDouble*rmb_usd).toString()));
+                //一个为焦点的时候，更新另外两个的值
+                if (rmbInput.isFocused() == true) {
+                    String rmbAmount = rmbInput.getText().toString();
+                    //判断是否为空
+                    if (!rmbAmount.matches("")) {
+                        double rmbAmountDouble = Double.parseDouble(rmbAmount);
+                        double cadAmountDouble = rmbAmountDouble /5.10;
+                        double usdAmountDouble = rmbAmountDouble /6.89;
+                        cadInput.setText(Double.toString(cadAmountDouble));
+                        usdInput.setText(Double.toString(usdAmountDouble));
+                    }
                 }
             }
         });
@@ -93,10 +108,17 @@ public class FragIndex extends Fragment {
             }
             @Override
             public void afterTextChanged(Editable s){
-                String cadAmount = cadInput.getText().toString();
-                if(!cadAmount.matches("")){
-                    double cadAmountDouble = Double.parseDouble(cadAmount);
-                    usdInput.setText(new String(new Double(cadAmountDouble/rmb_cad*rmb_usd).toString()));
+                //一个为焦点的时候，更新另外两个的值
+                if (usdInput.isFocused() == true) {
+                    String usdAmount = usdInput.getText().toString();
+                    //判断是否为空
+                    if (!usdAmount.matches("")) {
+                        double usdAmountDouble = Double.parseDouble(usdAmount);
+                        double rmbAmountDouble = usdAmountDouble / 6.89;
+                        double cadAmountDouble = usdAmountDouble / 1.35;
+                        rmbInput.setText(Double.toString(rmbAmountDouble));
+                        cadInput.setText(Double.toString(cadAmountDouble));
+                    }
                 }
             }
         });
