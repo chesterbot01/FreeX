@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:layout_width="fill_parent"
                 android:id="@+id/intype_announcement"
-                android:textColor="#000000">
+                android:textColor="#a0a000">
             </TextView>
 
             <TextView
@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_width="fill_parent"
                 android:id="@+id/inamount_announcement"
-                android:textColor="#000000">
+                android:textColor="#0050a0">
             </TextView>
             <TextView
                 android:layout_height="wrap_content"
@@ -65,7 +65,7 @@
                 android:layout_height="wrap_content"
                 android:layout_width="fill_parent"
                 android:id="@+id/outtype_announcement"
-                android:textColor="#000000">
+                android:textColor="#f00030">
             </TextView>
             <TextView
                 android:layout_height="wrap_content"
@@ -85,7 +85,7 @@
                 android:layout_height="wrap_content"
                 android:layout_width="fill_parent"
                 android:id="@+id/outamount_announcement"
-                android:textColor="#000000">
+                android:textColor="#005050">
             </TextView>
             <TextView
                 android:layout_height="wrap_content"
@@ -105,7 +105,7 @@
                 android:layout_height="wrap_content"
                 android:layout_width="fill_parent"
                 android:id="@+id/rate_announcement"
-                android:textColor="#000000">
+                android:textColor="#ff9f00">
             </TextView>
             <TextView
                 android:layout_height="wrap_content"

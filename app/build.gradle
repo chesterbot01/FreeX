@@ -2,10 +2,8 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.1"
-
-    useLibrary  'org.apache.http.legacy'
-
+    buildToolsVersion '23.0.0'
+    useLibrary 'org.apache.http.legacy'
     defaultConfig {
         applicationId "io.github.chesterboy01.freex"
         minSdkVersion 23
@@ -19,16 +17,16 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    productFlavors {
+    }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.+'
     compile 'com.android.support:support-v4:23.+'
     compile 'com.google.android.gms:play-services-appindexing:8.4.0'
     compile 'net.sf.json-lib:json-lib:2.4:jdk15'
-    compile group: 'cz.msebera.android' , name: 'httpclient', version: '4.4.1.1'
-
-
+    compile 'cz.msebera.android:httpclient:4.4.1.1'
 }

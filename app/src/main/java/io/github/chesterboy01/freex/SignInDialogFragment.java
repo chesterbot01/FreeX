@@ -127,9 +127,9 @@ public class SignInDialogFragment extends DialogFragment {
                     if (result1) {
                         Toast.makeText(getActivity(), "登录成功", Toast.LENGTH_LONG).show();
 
-                        Toast.makeText(getActivity(),
+                       /* Toast.makeText(getActivity(),
                                 "用户名是" + conUser.getUsername() + " 密码是" + conUser.getPassword(),
-                                Toast.LENGTH_LONG).show();
+                                Toast.LENGTH_LONG).show();*/
 
                         Intent intent_toMain = new Intent(getActivity(), MainActivity.class);
                         //把要传的对象放到bundle里通过intent传进MainActivity中

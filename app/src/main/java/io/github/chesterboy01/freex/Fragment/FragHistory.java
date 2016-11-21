@@ -19,6 +19,9 @@ import io.github.chesterboy01.freex.UserPass;
 import io.github.chesterboy01.freex.entity.User;
 
 
+/*Action: searchTransactionHistory
+        成功：JSONArray对象
+        失败：searchTFail字符串*/
 public class FragHistory extends Fragment {
 //部署ultra-pull 下拉刷新
 

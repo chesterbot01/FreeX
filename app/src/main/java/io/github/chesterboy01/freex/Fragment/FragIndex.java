@@ -68,8 +68,8 @@ public class FragIndex extends Fragment {
                         double cadAmountDouble = Double.parseDouble(cadAmount);
                         double rmbAmountDouble = cadAmountDouble * 5.10;
                         double usdAmountDouble = cadAmountDouble * 1.35;
-                        rmbInput.setText(Double.toString(rmbAmountDouble));
-                        usdInput.setText(Double.toString(usdAmountDouble));
+                        rmbInput.setText(Double.toString(rmbAmountDouble)+" RMB");
+                        usdInput.setText(Double.toString(usdAmountDouble)+" USD");
                     }
                 }
             }
@@ -92,8 +92,8 @@ public class FragIndex extends Fragment {
                         double rmbAmountDouble = Double.parseDouble(rmbAmount);
                         double cadAmountDouble = rmbAmountDouble /5.10;
                         double usdAmountDouble = rmbAmountDouble /6.89;
-                        cadInput.setText(Double.toString(cadAmountDouble));
-                        usdInput.setText(Double.toString(usdAmountDouble));
+                        cadInput.setText(Double.toString(cadAmountDouble)+" CAD");
+                        usdInput.setText(Double.toString(usdAmountDouble)+" USD");
                     }
                 }
             }
@@ -116,8 +116,8 @@ public class FragIndex extends Fragment {
                         double usdAmountDouble = Double.parseDouble(usdAmount);
                         double rmbAmountDouble = usdAmountDouble / 6.89;
                         double cadAmountDouble = usdAmountDouble / 1.35;
-                        rmbInput.setText(Double.toString(rmbAmountDouble));
-                        cadInput.setText(Double.toString(cadAmountDouble));
+                        rmbInput.setText(Double.toString(rmbAmountDouble)+" RMB");
+                        cadInput.setText(Double.toString(cadAmountDouble)+" CAD");
                     }
                 }
             }

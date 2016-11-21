@@ -177,15 +177,6 @@ public class SignUpDialogFragment extends DialogFragment {
                     Toast.makeText(getActivity(), "失败", Toast.LENGTH_LONG).show();
 
                 dismiss();
-                //if (!password_signup_2.equals(password_signup_1)) {
-                    //Toast.makeText(getActivity(), "Password is not consistent, please try again", Toast.LENGTH_LONG).show();
-                    //dismiss();
-                    //SignUpDialogFragment dialog_signup = new SignUpDialogFragment();
-                    //dialog_signup.show(getFragmentManager(), "signupDialog");
-                //} else {
-
-
-                //}
             }
         });
 

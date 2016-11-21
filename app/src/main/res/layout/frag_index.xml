@@ -9,6 +9,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/news_title"
+        android:layout_gravity="center"
+        android:layout_centerHorizontal="true"
+        android:textColor="#ffffff"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
     <ViewFlipper
         android:id="@+id/flipper"
@@ -25,11 +28,15 @@
     </ViewFlipper>
 
     <TextView
+        android:layout_marginTop="114dp"
         android:text="Exchange Calculator"
         android:layout_width="match_parent"
+        android:layout_gravity="center"
         android:layout_height="wrap_content"
         android:id="@+id/title_calculator"
+        android:layout_centerHorizontal="true"
         android:layout_marginBottom="14dp"
+        android:textColor="#ffffff"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
 
     <EditText
@@ -39,7 +46,7 @@
         android:layout_marginBottom="14dp"
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
-        android:background="@color/btn_white_pressed"
+        android:background="#000055"
         android:fontFamily="sans-serif"
         android:hint="CAD input amount"
         android:inputType="number"
@@ -53,7 +60,7 @@
         android:layout_marginBottom="14dp"
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
-        android:background="@color/btn_white_pressed"
+        android:background="#000055"
         android:fontFamily="sans-serif"
         android:hint="RMB input amount"
         android:inputType="number"
@@ -67,12 +74,12 @@
         android:layout_marginBottom="14dp"
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
-        android:background="@color/btn_white_pressed"
+        android:background="#000055"
         android:fontFamily="sans-serif"
         android:hint="USD  input amount"
         android:inputType="number"
         android:digits="1234567890."
-        android:textColor="#0000AA"/>
+        android:textColor="#00ffff"/>
 
     <include
         android:id="@+id/rl_error_item"
