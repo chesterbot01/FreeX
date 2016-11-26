@@ -1,5 +1,6 @@
 package io.github.chesterboy01.freex.Fragment;
 
+import android.app.Application;
 import android.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
@@ -20,16 +22,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.List;
 
 import io.github.chesterboy01.freex.R;
 import io.github.chesterboy01.freex.UserPass;
 import io.github.chesterboy01.freex.entity.Balance;
 import io.github.chesterboy01.freex.entity.User;
+import io.github.chesterboy01.freex.net.CookieApplication;
 import io.github.chesterboy01.freex.net.HttpUtil;
 
 
 public class FragUser extends Fragment {
-
+    Application appCtx;
     public UserPass mListener;
     User conUser;
 
@@ -58,6 +62,8 @@ public class FragUser extends Fragment {
         View v = inflater.inflate(R.layout.frag_user,container,false);
         conUser = mListener.getUser();
 
+        new Fetch3Balance().execute(conUser);
+
         userName = (TextView) v.findViewById(R.id.user_frag_username_value);
         userEmail = (TextView) v.findViewById(R.id.user_frag_useremail_value);
         cadBal = (TextView) v.findViewById(R.id.user_frag_cadBalance_value);
@@ -67,17 +73,13 @@ public class FragUser extends Fragment {
         userName.setText(conUser.getUsername());
         userEmail.setText(conUser.getEmail());
 
-        new Fetch3Balance().execute(conUser);
-
-        cadBal.setText(cadBalance.getBamount());
-        rmbBal.setText(rmbBalance.getBamount());
-        usdBal.setText(usdBalance.getBamount());
-
-
         return v;
     }
 
+    @Override
+    public void onResume(){
 
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -100,11 +102,12 @@ public class FragUser extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    public class Fetch3Balance extends AsyncTask<User, Void, Boolean> {
+    public class Fetch3Balance extends AsyncTask<User, Void, Void> {
         protected void onPreExecute() {
 
         }
-        protected Boolean doInBackground(User... params) {
+        @SuppressWarnings("deprecation")
+        protected Void doInBackground(User... params) {
             //params[0]就是我要传进来的user对象
             try {
                 String URL = "http://192.168.95.1:8080/FreeX_Server/fetchBalance.action";
@@ -115,8 +118,14 @@ public class FragUser extends Fragment {
                     json.put("username",params[0].getUsername());
                     json.put("password",params[0].getPassword());
                     json.put("email",params[0].getEmail());
+                    CookieApplication appCookie = (CookieApplication) appCtx;
+                    List<Cookie> cookies = appCookie.getCookie();
+
                     StringEntity se = new StringEntity(json.toString(),"utf-8");
                     request.setEntity(se);
+
+                    //set http header cookie信息
+                    request.setHeader("cookie", "JSESSIONID=" + cookies.get(0).getValue());
                     HttpResponse response = HttpUtil.getHttpResponse(request);
                     int code = response.getStatusLine().getStatusCode();
                     if (code == 200){
@@ -151,10 +160,17 @@ public class FragUser extends Fragment {
             }
 
             fetch_flag = true;
-            return fetch_result;
+            return null;
         }
-        protected void onPostExecute(Boolean... params) {
+
+        @Override
+        protected void onPostExecute(Void params) {
+            while(!fetch_flag);
+            cadBal.setText(cadBalance.getBamount());
+            rmbBal.setText(rmbBalance.getBamount());
+            usdBal.setText(usdBalance.getBamount());
         }
+
         void setBalance(JSONObject jo, Balance bal) throws JSONException {
             bal.setBamount(jo.getString("bamount"));
             bal.setBid(jo.getInt("bid"));

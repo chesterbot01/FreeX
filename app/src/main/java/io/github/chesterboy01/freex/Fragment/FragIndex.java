@@ -68,7 +68,7 @@ public class FragIndex extends Fragment {
                         double cadAmountDouble = Double.parseDouble(cadAmount);
                         double rmbAmountDouble = cadAmountDouble * 5.10;
                         double usdAmountDouble = cadAmountDouble * 1.35;
-                        rmbInput.setText(Double.toString(rmbAmountDouble)+" RMB");
+                        rmbInput.setText(Double.toString(rmbAmountDouble)+" CNY");
                         usdInput.setText(Double.toString(usdAmountDouble)+" USD");
                     }
                 }
@@ -116,7 +116,7 @@ public class FragIndex extends Fragment {
                         double usdAmountDouble = Double.parseDouble(usdAmount);
                         double rmbAmountDouble = usdAmountDouble / 6.89;
                         double cadAmountDouble = usdAmountDouble / 1.35;
-                        rmbInput.setText(Double.toString(rmbAmountDouble)+" RMB");
+                        rmbInput.setText(Double.toString(rmbAmountDouble)+" CNY");
                         cadInput.setText(Double.toString(cadAmountDouble)+" CAD");
                     }
                 }

@@ -21,7 +21,7 @@ public class FragTrade extends Fragment implements View.OnClickListener {
     TradeMainDialog dialog;
 
     private String[] imageNameDatabase
-            = new String[] {"CAD", "RMB", "USD"};
+            = new String[] {"CAD", "CNY", "USD"};
 
 
     @Override

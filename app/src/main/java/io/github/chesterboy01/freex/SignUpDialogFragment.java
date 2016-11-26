@@ -199,6 +199,7 @@ public class SignUpDialogFragment extends DialogFragment {
         protected void onPreExecute() {
 
         }
+        @SuppressWarnings("deprecation")
         protected Boolean doInBackground(User... params) {
             //params[0]就是我要传进来的user对象
             try {

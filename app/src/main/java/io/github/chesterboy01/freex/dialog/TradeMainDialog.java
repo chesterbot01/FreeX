@@ -1,5 +1,6 @@
 package io.github.chesterboy01.freex.dialog;
 
+import android.app.Application;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.os.AsyncTask;
@@ -21,23 +22,26 @@ import android.widget.Toast;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.List;
 
 import io.github.chesterboy01.freex.R;
 import io.github.chesterboy01.freex.entity.Balance;
 import io.github.chesterboy01.freex.entity.Transaction_history;
 import io.github.chesterboy01.freex.entity.User;
+import io.github.chesterboy01.freex.net.CookieApplication;
 import io.github.chesterboy01.freex.net.HttpUtil;
 
 
 
 
 public class TradeMainDialog extends DialogFragment {
-
+    Application appCtx;
 //含有userid的完整对象需要传进来
     Transaction_history singleTransaction;
     User conUser;
@@ -126,7 +130,7 @@ public class TradeMainDialog extends DialogFragment {
                     case "CAD":
                         singleTransaction.setCidin(1);
                         break;
-                    case "RMB":
+                    case "CNY":
                         singleTransaction.setCidin(2);
                         break;
                     case "USD":
@@ -156,7 +160,7 @@ public class TradeMainDialog extends DialogFragment {
                     case "CAD":
                         singleTransaction.setCidout(1);
                         break;
-                    case "RMB":
+                    case "CNY":
                         singleTransaction.setCidout(2);
                         break;
                     case "USD":
@@ -421,8 +425,14 @@ public class TradeMainDialog extends DialogFragment {
                     json.put("thamount",params[0].getThamount());
                     json.put("cidin",params[0].getCidin());
                     json.put("thuid",params[0].getThuid());
+                    CookieApplication appCookie = (CookieApplication) appCtx;
+                    List<Cookie> cookies = appCookie.getCookie();
+
                     StringEntity se = new StringEntity(json.toString(),"utf-8");
                     request.setEntity(se);
+
+                    //set http header cookie信息
+                    request.setHeader("cookie", "JSESSIONID=" + cookies.get(0).getValue());
                     HttpResponse response = HttpUtil.getHttpResponse(request);
                     int code = response.getStatusLine().getStatusCode();
                     if (code == 200){
@@ -478,8 +488,14 @@ public class TradeMainDialog extends DialogFragment {
                     json.put("thamount",params[0].getThamount());
                     json.put("cidout",params[0].getCidout());
                     json.put("thuid",params[0].getThuid());
+                    CookieApplication appCookie = (CookieApplication) appCtx;
+                    List<Cookie> cookies = appCookie.getCookie();
+
                     StringEntity se = new StringEntity(json.toString(),"utf-8");
                     request.setEntity(se);
+
+                    //set http header cookie信息
+                    request.setHeader("cookie", "JSESSIONID=" + cookies.get(0).getValue());
                     HttpResponse response = HttpUtil.getHttpResponse(request);
                     int code = response.getStatusLine().getStatusCode();
                     if (code == 200){
@@ -538,8 +554,16 @@ public class TradeMainDialog extends DialogFragment {
                     json.put("thuid",params[0].getThuid());
                     json.put("cidin",params[0].getCidin());
                     json.put("rate",params[0].getRate());
+
+                    CookieApplication appCookie = (CookieApplication) appCtx;
+                    List<Cookie> cookies = appCookie.getCookie();
+
                     StringEntity se = new StringEntity(json.toString(),"utf-8");
                     request.setEntity(se);
+
+                    //set http header cookie信息
+                    request.setHeader("cookie", "JSESSIONID=" + cookies.get(0).getValue());
+
                     HttpResponse response = HttpUtil.getHttpResponse(request);
                     int code = response.getStatusLine().getStatusCode();
                     if (code == 200){
@@ -595,8 +619,16 @@ public class TradeMainDialog extends DialogFragment {
                     json.put("cidout",params[0].getCidout());
                     json.put("thuid",params[0].getThuid());
                     json.put("cidin",params[0].getCidin());
+
+                    CookieApplication appCookie = (CookieApplication) appCtx;
+                    List<Cookie> cookies = appCookie.getCookie();
+
                     StringEntity se = new StringEntity(json.toString(),"utf-8");
                     request.setEntity(se);
+
+                    //set http header cookie信息
+                    request.setHeader("cookie", "JSESSIONID=" + cookies.get(0).getValue());
+
                     HttpResponse response = HttpUtil.getHttpResponse(request);
                     int code = response.getStatusLine().getStatusCode();
                     if (code == 200){

@@ -1,6 +1,8 @@
 package io.github.chesterboy01.freex.net;
 
 
+import android.app.Application;
+
 import org.json.JSONObject;
 
 import io.github.chesterboy01.freex.entity.User;
@@ -12,10 +14,11 @@ import io.github.chesterboy01.freex.entity.User;
 public class loginProtocol {
     public User user;
     public JSONObject obj;
+    public Application appCtx;
     public loginProtocol (User user){
         this.user = user;
     }
-    public boolean checkLogin(User user){
+    public boolean checkLogin(User user, Application appCtx){
 
         //Log.v("user..xcxcx.",user.getUsername());
         try {
@@ -25,7 +28,7 @@ public class loginProtocol {
 
             String URL = "http://192.168.95.1:8080/FreeX_Server/login.action";
             //就这一句话就把向服务器查询和返回的数据全部要回来了
-            String result = HttpUtil.queryStringForPost(URL,user);
+            String result = HttpUtil.queryStringForPost(URL,user,appCtx);
             //读取服务器返回的json数据
             //Log.v("resultsdsds",result);
             if (result.equals("LoginFail"))
