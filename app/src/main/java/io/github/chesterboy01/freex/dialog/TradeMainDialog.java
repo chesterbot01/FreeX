@@ -1,8 +1,10 @@
 package io.github.chesterboy01.freex.dialog;
 
+import android.app.Activity;
 import android.app.Application;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -24,6 +26,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
@@ -35,17 +38,22 @@ import io.github.chesterboy01.freex.entity.Balance;
 import io.github.chesterboy01.freex.entity.Transaction_history;
 import io.github.chesterboy01.freex.entity.User;
 import io.github.chesterboy01.freex.net.CookieApplication;
-import io.github.chesterboy01.freex.net.HttpUtil;
-
-
 
 
 public class TradeMainDialog extends DialogFragment {
+    boolean confirmation;
+
     Application appCtx;
 //含有userid的完整对象需要传进来
     Transaction_history singleTransaction;
     User conUser;
     Balance conBalence;
+    Activity act;
+    String str_new;
+    String str_left;
+    String str_rate;
+    AlertDialog.Builder builder1;
+
 
     public static final int DEPOSIT = 0;
     public static final int WITHDRAWL = 1;
@@ -59,7 +67,6 @@ public class TradeMainDialog extends DialogFragment {
     TextView title_typeIn;
     TextView title_typeOut;
     TextView textViewoutamount1;
-    TextView textViewoutamount2;
     Spinner s_in;
     Spinner s_out;
     EditText inAmount;
@@ -67,9 +74,6 @@ public class TradeMainDialog extends DialogFragment {
     Button submitButton;
     Button QRcodeGenOrScan;
 
-    String inputRate;
-    double currentRate;
-    double currentAmount;
 
     //用于asynctask返回结果的boolean变量
     boolean result_deposit;
@@ -87,7 +91,8 @@ public class TradeMainDialog extends DialogFragment {
     }
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState){
-
+        act = getActivity();
+        appCtx = getActivity().getApplication();
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.trade_main, null);
@@ -137,7 +142,7 @@ public class TradeMainDialog extends DialogFragment {
                         singleTransaction.setCidin(3);
                         break;
                     default:
-                        singleTransaction.setCidin(1);
+                        singleTransaction.setCidin(0);
                         break;
                 }
 
@@ -167,7 +172,7 @@ public class TradeMainDialog extends DialogFragment {
                         singleTransaction.setCidout(3);
                         break;
                     default:
-                        singleTransaction.setCidout(1);
+                        singleTransaction.setCidout(0);
                         break;
                 }
 
@@ -202,7 +207,7 @@ public class TradeMainDialog extends DialogFragment {
 
                         new LoginAsyncTradeDeposit().execute(tranNew);
 
-                        Toast.makeText(getActivity(), "Deposit is done",
+                        Toast.makeText(act, "Deposit is done",
                                 Toast.LENGTH_LONG).show();
                         dismiss();
                         break;
@@ -217,7 +222,7 @@ public class TradeMainDialog extends DialogFragment {
                         //然后向服务器发送数据
                         //并且传入tranNew;
 
-                        Toast.makeText(getActivity(), "Withdrawl is done",
+                        Toast.makeText(act, "Withdrawl is done",
                                 Toast.LENGTH_LONG).show();
                         dismiss();
                         break;
@@ -228,13 +233,10 @@ public class TradeMainDialog extends DialogFragment {
                         tranNew.setCidin(singleTransaction.getCidin());
                         tranNew.setCidout(singleTransaction.getCidout());
                         tranNew.setThamount(singleTransaction.getThamount());
-
                         new LoginAsyncTradeBuy().execute(tranNew);
-                        //然后向服务器发送数据
 
 
-                        Toast.makeText(getActivity(), "Buy is done",
-                                Toast.LENGTH_LONG).show();
+
                         dismiss();
                         break;
                     case SELL:
@@ -251,12 +253,12 @@ public class TradeMainDialog extends DialogFragment {
                         //然后向服务器发送数据
                         new LoginAsyncTradeSell().execute(tranNew);
 
-                        Toast.makeText(getActivity(), "Sell is done",
+                        Toast.makeText(act, "Sell is done",
                                 Toast.LENGTH_LONG).show();
                         dismiss();
                         break;
                     default:
-                        Toast.makeText(getActivity(), "Error",
+                        Toast.makeText(act, "Error",
                                 Toast.LENGTH_LONG).show();
                         break;
                 }
@@ -280,7 +282,7 @@ public class TradeMainDialog extends DialogFragment {
 
                         break;
                     default:
-                        Toast.makeText(getActivity(), "Error",
+                        Toast.makeText(act, "Error",
                                 Toast.LENGTH_LONG).show();
                         break;
                 }
@@ -381,7 +383,7 @@ public class TradeMainDialog extends DialogFragment {
                 calculatedAmount.setEnabled(true);
                 break;
             default:
-                Toast.makeText(getActivity(), "Error",
+                Toast.makeText(act, "Error",
                         Toast.LENGTH_LONG).show();
                 break;
         }
@@ -419,7 +421,7 @@ public class TradeMainDialog extends DialogFragment {
             try {
                 String URL = "http://192.168.95.1:8080/FreeX_Server/deposit.action";
                 result = null;
-                HttpPost request = HttpUtil.getHttpPost(URL);
+                HttpPost request = new HttpPost(URL);
                 try{
                     JSONObject json = new JSONObject();
                     json.put("thamount",params[0].getThamount());
@@ -433,7 +435,7 @@ public class TradeMainDialog extends DialogFragment {
 
                     //set http header cookie信息
                     request.setHeader("cookie", "JSESSIONID=" + cookies.get(0).getValue());
-                    HttpResponse response = HttpUtil.getHttpResponse(request);
+                    HttpResponse response = new DefaultHttpClient().execute(request);
                     int code = response.getStatusLine().getStatusCode();
                     if (code == 200){
                         result = EntityUtils.toString(response.getEntity());
@@ -482,7 +484,7 @@ public class TradeMainDialog extends DialogFragment {
             try {
                 String URL = "http://192.168.95.1:8080/FreeX_Server/withdrawal.action";
                 result = null;
-                HttpPost request = HttpUtil.getHttpPost(URL);
+                HttpPost request =  new HttpPost(URL);
                 try{
                     JSONObject json = new JSONObject();
                     json.put("thamount",params[0].getThamount());
@@ -496,7 +498,7 @@ public class TradeMainDialog extends DialogFragment {
 
                     //set http header cookie信息
                     request.setHeader("cookie", "JSESSIONID=" + cookies.get(0).getValue());
-                    HttpResponse response = HttpUtil.getHttpResponse(request);
+                    HttpResponse response = new DefaultHttpClient().execute(request);
                     int code = response.getStatusLine().getStatusCode();
                     if (code == 200){
                         result = EntityUtils.toString(response.getEntity());
@@ -544,9 +546,9 @@ public class TradeMainDialog extends DialogFragment {
             //params[0]就是我要传进来的Transaction_history对象
             String result;
             try {
-                String URL = "http://192.168.95.1:8080/FreeX_Server/sell.action";
+                String URL = "http://192.168.95.1:8080/FreeX_Server/AddNewTransaction.action";
                 result = null;
-                HttpPost request = HttpUtil.getHttpPost(URL);
+                HttpPost request = new HttpPost(URL);
                 try{
                     JSONObject json = new JSONObject();
                     json.put("thamount",params[0].getThamount());
@@ -564,7 +566,7 @@ public class TradeMainDialog extends DialogFragment {
                     //set http header cookie信息
                     request.setHeader("cookie", "JSESSIONID=" + cookies.get(0).getValue());
 
-                    HttpResponse response = HttpUtil.getHttpResponse(request);
+                    HttpResponse response =  new DefaultHttpClient().execute(request);;
                     int code = response.getStatusLine().getStatusCode();
                     if (code == 200){
                         result = EntityUtils.toString(response.getEntity());
@@ -579,16 +581,18 @@ public class TradeMainDialog extends DialogFragment {
                     result = "IOException:network is not available";
                 }
 
-                if (result.equals("RegisterFail"))
+                if (result.equals("TransactionFail")) {
                     result_sell = false;
+                    Toast.makeText(act, "Transaction is failed!!!", Toast.LENGTH_LONG).show();
+                }
+                else if (result.equals("MoneyNotEnough")) {
+                    result_sell = false;
+                    Toast.makeText(act, "Money is not enough!!!", Toast.LENGTH_LONG).show();
+                }
                 else{
                     JSONObject obj = new JSONObject(result);
-                    if (obj.getInt("uid") > 0) {
+                    if (!obj.getString("1").matches("")) {
                         result_sell = true;
-                        conBalence.setBamount(obj.getString("bamount"));
-                        conBalence.setBid(obj.getInt("bid"));
-                        conBalence.setBcid(obj.getInt("bcid"));
-                        conBalence.setBuid(obj.getInt("buid"));
                     }
                 }
             } catch (Exception e) {
@@ -602,17 +606,17 @@ public class TradeMainDialog extends DialogFragment {
         }
     }
 
-    public class LoginAsyncTradeBuy extends AsyncTask<Transaction_history, Void, Boolean> {
+    public class LoginAsyncTradeBuy extends AsyncTask<Transaction_history, Void, Void> {
         protected void onPreExecute() {
 
         }
-        protected Boolean doInBackground(Transaction_history... params) {
+        protected Void doInBackground(Transaction_history... params) {
             String result;
             //params[0]就是我要传进来的Transaction_history对象
             try {
-                String URL = "http://192.168.95.1:8080/FreeX_Server/buy.action";
+                String URL = "http://192.168.95.1:8080/FreeX_Server/AddNewTransaction.action";
                 result = null;
-                HttpPost request = HttpUtil.getHttpPost(URL);
+                HttpPost request = new HttpPost(URL);
                 try{
                     JSONObject json = new JSONObject();
                     json.put("thamount",params[0].getThamount());
@@ -629,7 +633,112 @@ public class TradeMainDialog extends DialogFragment {
                     //set http header cookie信息
                     request.setHeader("cookie", "JSESSIONID=" + cookies.get(0).getValue());
 
-                    HttpResponse response = HttpUtil.getHttpResponse(request);
+                    HttpResponse response = new DefaultHttpClient().execute(request);;
+                    int code = response.getStatusLine().getStatusCode();
+                    if (code == 200){
+                        result = EntityUtils.toString(response.getEntity());
+                        Log.v("问题到底在哪？？", result);
+                    }
+                }
+                catch(ClientProtocolException e){
+                    e.printStackTrace();
+                    result = "ClientProtocolException:network is not available";
+                }
+                catch(IOException e) {
+                    e.printStackTrace();
+                    result = "IOException:network is not available";
+                }
+
+                if (result.equals("TransactionFail")){
+                    result_buy = false;
+                    Toast.makeText(act, "Transaction is failed!!!", Toast.LENGTH_LONG).show();
+                }
+                else if (result.equals("MoneyNotEnough")) {
+                    result_sell = false;
+                    Toast.makeText(act, "Money is not enough!!!", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    JSONObject obj = new JSONObject(result);
+                    Log.v("afsadfsafsaf","fsafdsafafafa");
+                    if (!obj.getString("1").matches("")) {
+                        result_buy = true;
+                        str_new = obj.getString("1");
+                        str_left = obj.getString("2");
+                        str_rate = obj.getString("3");
+                        Log.v("换成多少",str_new);
+                        Log.v("还剩多少",str_left);
+                        Log.v("汇率",str_rate);
+
+
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            flag_buy = true;
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void params) {
+            builder1 = new AlertDialog.Builder(act);
+            builder1.setTitle("Confirmation");
+            builder1.setMessage(" Are you sure? " + singleTransaction.getCidin() + " " + str_new + " have been flew in, " + singleTransaction.getCidout()+" have been flew out " + str_left+ "  , rate is "+ str_rate + " ");
+            builder1.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    //然后向服务器发送数据
+                    confirmation = true;
+                    new ConfirmationAsync().execute(confirmation);
+                    Toast.makeText(act, "Buy is done",
+                            Toast.LENGTH_LONG).show();
+                }
+            });
+            builder1.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    confirmation = false;
+                    new ConfirmationAsync().execute(confirmation);
+                    Toast.makeText(act, "Cancelled !",
+                            Toast.LENGTH_LONG).show();
+                }
+            });
+            builder1.show();
+        }
+    }
+
+
+
+    public class ConfirmationAsync extends AsyncTask<Boolean, Void, Boolean> {
+        int state;
+        protected void onPreExecute() {
+
+        }
+        protected Boolean doInBackground(Boolean... params) {
+
+            String result;
+            try {
+                String URL = "http://192.168.95.1:8080/FreeX_Server/ExecuteNewTransaction.action";
+                result = null;
+                HttpPost request = new HttpPost(URL);
+                try{
+                    JSONObject json = new JSONObject();
+                    int according_to_confirmation;
+                    if (confirmation == true)
+                        according_to_confirmation = 1;
+                    else
+                        according_to_confirmation = 0;
+                    json.put("flag",according_to_confirmation);
+                    CookieApplication appCookie = (CookieApplication) appCtx;
+                    List<Cookie> cookies = appCookie.getCookie();
+
+                    StringEntity se = new StringEntity(json.toString(),"utf-8");
+                    request.setEntity(se);
+
+                    //set http header cookie信息
+                    request.setHeader("cookie", "JSESSIONID=" + cookies.get(0).getValue());
+
+                    HttpResponse response =  new DefaultHttpClient().execute(request);;
                     int code = response.getStatusLine().getStatusCode();
                     if (code == 200){
                         result = EntityUtils.toString(response.getEntity());
@@ -644,27 +753,26 @@ public class TradeMainDialog extends DialogFragment {
                     result = "IOException:network is not available";
                 }
 
-                if (result.equals("RegisterFail"))
-                    result_buy = false;
-                else{
-                    JSONObject obj = new JSONObject(result);
-                    if (obj.getInt("uid") > 0) {
-                        result_buy = true;
-                        conBalence.setBamount(obj.getString("bamount"));
-                        conBalence.setBid(obj.getInt("bid"));
-                        conBalence.setBcid(obj.getInt("bcid"));
-                        conBalence.setBuid(obj.getInt("buid"));
-                    }
+                if (result.equals("Fail")) {
+                    result_sell = false;
+                    state = 2;
+                }
+                else if (result.equals("Success")){
+                    result_sell = true;
+                    state = 1;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
-            flag_buy = true;
-            return result_buy;
+            flag_sell = true;
+            return result_sell;
         }
-        protected void onPostExecute(Boolean... params) {
+        protected void onPostExecute(Boolean params) {
+            if (state == 1)
+                Toast.makeText(act, "Transaction is done!", Toast.LENGTH_LONG).show();
+            else if (state == 2)
+                Toast.makeText(act, "Transaction is cancelled!!!", Toast.LENGTH_LONG).show();
         }
     }
-
 }

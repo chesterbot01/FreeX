@@ -6,6 +6,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +14,11 @@ import android.widget.TextView;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,7 +32,6 @@ import io.github.chesterboy01.freex.UserPass;
 import io.github.chesterboy01.freex.entity.Balance;
 import io.github.chesterboy01.freex.entity.User;
 import io.github.chesterboy01.freex.net.CookieApplication;
-import io.github.chesterboy01.freex.net.HttpUtil;
 
 
 public class FragUser extends Fragment {
@@ -59,10 +61,12 @@ public class FragUser extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        appCtx = getActivity().getApplication();
         View v = inflater.inflate(R.layout.frag_user,container,false);
         conUser = mListener.getUser();
 
         new Fetch3Balance().execute(conUser);
+
 
         userName = (TextView) v.findViewById(R.id.user_frag_username_value);
         userEmail = (TextView) v.findViewById(R.id.user_frag_useremail_value);
@@ -76,10 +80,6 @@ public class FragUser extends Fragment {
         return v;
     }
 
-    @Override
-    public void onResume(){
-
-    }
 
     @Override
     public void onAttach(Context context) {
@@ -103,6 +103,8 @@ public class FragUser extends Fragment {
     }
 
     public class Fetch3Balance extends AsyncTask<User, Void, Void> {
+        HttpClient client;
+        String result;
         protected void onPreExecute() {
 
         }
@@ -111,8 +113,8 @@ public class FragUser extends Fragment {
             //params[0]就是我要传进来的user对象
             try {
                 String URL = "http://192.168.95.1:8080/FreeX_Server/fetchBalance.action";
-                String result = null;
-                HttpPost request = HttpUtil.getHttpPost(URL);
+                result = null;
+                HttpPost request = new HttpPost(URL);;
                 try{
                     JSONObject json = new JSONObject();
                     json.put("username",params[0].getUsername());
@@ -120,16 +122,21 @@ public class FragUser extends Fragment {
                     json.put("email",params[0].getEmail());
                     CookieApplication appCookie = (CookieApplication) appCtx;
                     List<Cookie> cookies = appCookie.getCookie();
-
+                    Log.v("cookies 在Fraguser里是什么", cookies.toString());
+                    Log.v("cookies的get(0) 是什么", cookies.get(0).toString());
                     StringEntity se = new StringEntity(json.toString(),"utf-8");
                     request.setEntity(se);
 
                     //set http header cookie信息
-                    request.setHeader("cookie", "JSESSIONID=" + cookies.get(0).getValue());
-                    HttpResponse response = HttpUtil.getHttpResponse(request);
+                    Cookie tmp = cookies.get(0);
+                    Log.v("tmp的getVersion是什么", tmp.getValue());
+                    request.setHeader("cookie", "JSESSIONID=" + tmp.getValue());
+                    client = new DefaultHttpClient();
+                    HttpResponse response = client.execute(request);;
                     int code = response.getStatusLine().getStatusCode();
                     if (code == 200){
                         result = EntityUtils.toString(response.getEntity());
+                        Log.v("服务器给我返回了result吗", result);
                     }
                 }
                 catch(ClientProtocolException e){
@@ -145,13 +152,22 @@ public class FragUser extends Fragment {
                     fetch_result = false;
                 else{
                     JSONArray jsonArray = new JSONArray(result);
+                    Log.v("JSONArray jsonArray = new JSONArray(result);????", jsonArray.toString());
+                    //JSONObject jsonObject = new JSONObject(result);
+                    //JSONArray jsonArray = jsonObject.getJSONArray();
                     JSONObject objcad = (JSONObject) jsonArray.get(0);
                     JSONObject objrmb = (JSONObject) jsonArray.get(1);
                     JSONObject objusd = (JSONObject) jsonArray.get(2);
-                    if (objcad.getInt("uid") > 0) {
+                    Log.v("objcad有值吗？？？", objcad.toString());
+                    if (objcad.getInt("buid") > 0) {
                         fetch_result = true;
                     }
+                    cadBalance = new Balance();
+                    rmbBalance = new Balance();
+                    usdBalance = new Balance();
                     setBalance(objcad,cadBalance);
+                    Log.v("objcad是什么！！！！", objcad.toString());
+                    Log.v("cadBalance是什么！！！！", cadBalance.toString());
                     setBalance(objrmb,rmbBalance);
                     setBalance(objusd,usdBalance);
                 }
@@ -165,10 +181,13 @@ public class FragUser extends Fragment {
 
         @Override
         protected void onPostExecute(Void params) {
-            while(!fetch_flag);
-            cadBal.setText(cadBalance.getBamount());
-            rmbBal.setText(rmbBalance.getBamount());
-            usdBal.setText(usdBalance.getBamount());
+            //while(!fetch_flag);
+            if(fetch_result == true) {
+                Log.v("到底访问了没！！？？", "sfdsdfsfsfsfsdfsdf");
+                cadBal.setText(cadBalance.getBamount());
+                rmbBal.setText(rmbBalance.getBamount());
+                usdBal.setText(usdBalance.getBamount());
+            }
         }
 
         void setBalance(JSONObject jo, Balance bal) throws JSONException {

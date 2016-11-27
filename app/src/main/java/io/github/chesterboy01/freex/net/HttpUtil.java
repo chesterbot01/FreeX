@@ -1,3 +1,4 @@
+/*
 package io.github.chesterboy01.freex.net;
 
 import android.app.Application;
@@ -21,9 +22,11 @@ import java.util.List;
 
 import io.github.chesterboy01.freex.entity.User;
 
+*/
 /**
  * Created by Administrator on 11/7/2016.
- */
+ *//*
+
 
 public class HttpUtil {
     //声明Base URL常量
@@ -140,3 +143,4 @@ public class HttpUtil {
         return null;
     }
 }
+*/

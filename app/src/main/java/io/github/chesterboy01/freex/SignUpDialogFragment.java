@@ -19,13 +19,13 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
 import java.io.IOException;
 
 import io.github.chesterboy01.freex.entity.User;
-import io.github.chesterboy01.freex.net.HttpUtil;
 
 import static io.github.chesterboy01.freex.R.layout.signup_fragment;
 import static io.github.chesterboy01.freex.RegularExpressionEmailAddress.isEmailAddressMatched;
@@ -205,7 +205,7 @@ public class SignUpDialogFragment extends DialogFragment {
             try {
                 String URL = "http://192.168.95.1:8080/FreeX_Server/register.action";
                 String result = null;
-                HttpPost request = HttpUtil.getHttpPost(URL);
+                HttpPost request = new HttpPost(URL);;
                 try{
                     JSONObject json = new JSONObject();
                     json.put("username",params[0].getUsername());
@@ -213,7 +213,7 @@ public class SignUpDialogFragment extends DialogFragment {
                     json.put("email",params[0].getEmail());
                     StringEntity se = new StringEntity(json.toString(),"utf-8");
                     request.setEntity(se);
-                    HttpResponse response = HttpUtil.getHttpResponse(request);
+                    HttpResponse response = new DefaultHttpClient().execute(request);
                     int code = response.getStatusLine().getStatusCode();
                     if (code == 200){
                         result = EntityUtils.toString(response.getEntity());

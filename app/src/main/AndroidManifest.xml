@@ -10,6 +10,7 @@ package="io.github.chesterboy01.freex">
     android:label="@string/app_name"
     android:supportsRtl="true"
     android:theme="@style/Theme.AppCompat.Light"
+    android:name=".net.CookieApplication"
     >
     <activity
         android:name=".WelcomeActivity"

@@ -1,3 +1,4 @@
+/*
 package io.github.chesterboy01.freex.net;
 
 
@@ -7,9 +8,11 @@ import org.json.JSONObject;
 
 import io.github.chesterboy01.freex.entity.User;
 
+*/
 /**
  * Created by Administrator on 11/7/2016.
- */
+ *//*
+
 
 public class loginProtocol {
     public User user;
@@ -56,3 +59,4 @@ public class loginProtocol {
         user.setUid(obj.getInt("uid"));
     }
 }
+*/

@@ -33,7 +33,7 @@ import java.util.List;
 
 import io.github.chesterboy01.freex.entity.User;
 import io.github.chesterboy01.freex.net.CookieApplication;
-import io.github.chesterboy01.freex.net.loginProtocol;
+
 
 /**
  * Created by Administrator on 10/10/2016.
@@ -54,7 +54,7 @@ public class SignInDialogFragment extends DialogFragment {
 
     User conUser;
 
-    loginProtocol login;
+    //loginProtocol login;
     //用于服务返回的时候允许登陆的flag
 
     String out;
@@ -213,16 +213,17 @@ public class SignInDialogFragment extends DialogFragment {
                         result = "network is not available";
                     }
                     else {
-                        for(int i = 0; i<cookies.size();i++){
                             //保存cookie
                             //全局变量存储cookie
                             CookieApplication appCookie = (CookieApplication) appCtx;
                             appCookie.setCookie(cookies);
-                        }
+                            Log.v("session",appCookie.getCookie().get(0).getValue());
                         if (code == 200) {
                             //获得返回结果
                             result = EntityUtils.toString(response.getEntity());
+
                         }
+
                     }
                 }
                 catch(ClientProtocolException e){
