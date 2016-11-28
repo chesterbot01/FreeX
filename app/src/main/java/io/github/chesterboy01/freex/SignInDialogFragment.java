@@ -1,5 +1,6 @@
 package io.github.chesterboy01.freex;
 
+import android.app.Activity;
 import android.app.Application;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -46,6 +47,7 @@ public class SignInDialogFragment extends DialogFragment {
          }*/
     //用于第一次连接的时候发送Json给服务器
     Application appCtx;
+    Activity act;
 
     boolean isTest = false;
 
@@ -60,7 +62,9 @@ public class SignInDialogFragment extends DialogFragment {
     String out;
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        appCtx = getActivity().getApplication();
+        act = getActivity();
+        appCtx = act.getApplication();
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -133,35 +137,7 @@ public class SignInDialogFragment extends DialogFragment {
                 conUser.setUsername(tv1.getText().toString());
                 conUser.setPassword(tv2.getText().toString());
                 new LoginAsync1().execute(conUser);
-
-
                 //System.out.println(result);
-
-                if(isTest) {
-                    Intent intent_toMain = new Intent(getActivity(), MainActivity.class);
-                    ((FullscreenActivityBeforeLogin) getActivity()).startActivity(intent_toMain);
-                }
-                else{
-                    while (!flag1);
-                    if (result1) {
-                        Toast.makeText(getActivity(), "登录成功", Toast.LENGTH_LONG).show();
-
-                       /* Toast.makeText(getActivity(),
-                                "用户名是" + conUser.getUsername() + " 密码是" + conUser.getPassword(),
-                                Toast.LENGTH_LONG).show();*/
-
-                        Intent intent_toMain = new Intent(getActivity(), MainActivity.class);
-                        //把要传的对象放到bundle里通过intent传进MainActivity中
-                        Bundle bundle= new Bundle();
-                        bundle.putSerializable("user", conUser);
-                        intent_toMain.putExtras(bundle);
-
-                        (getActivity()).startActivity(intent_toMain);
-
-                    } else {
-                        Toast.makeText(getActivity(), "登录失败", Toast.LENGTH_LONG).show();
-                    }
-                }
             }
         });
         return builder.setView(view).create();
@@ -256,7 +232,31 @@ public class SignInDialogFragment extends DialogFragment {
 
             return result1;
         }
-        protected void onPostExecute(Boolean... params) {
+        protected void onPostExecute(Boolean params) {
+            if(isTest) {
+                Intent intent_toMain = new Intent(getActivity(), MainActivity.class);
+                ((FullscreenActivityBeforeLogin) getActivity()).startActivity(intent_toMain);
+            }
+            else{
+                if (result1&&flag1) {
+                    Toast.makeText(act, "登录成功", Toast.LENGTH_LONG).show();
+
+                       /* Toast.makeText(getActivity(),
+                                "用户名是" + conUser.getUsername() + " 密码是" + conUser.getPassword(),
+                                Toast.LENGTH_LONG).show();*/
+
+                    Intent intent_toMain = new Intent(act, MainActivity.class);
+                    //把要传的对象放到bundle里通过intent传进MainActivity中
+                    Bundle bundle= new Bundle();
+                    bundle.putSerializable("user", conUser);
+                    intent_toMain.putExtras(bundle);
+
+                    (act).startActivity(intent_toMain);
+
+                } else {
+                    Toast.makeText(act, "登录失败", Toast.LENGTH_LONG).show();
+                }
+            }
         }
         public void setUser(User user) throws Exception{
             user.setUsername(obj.getString("username"));

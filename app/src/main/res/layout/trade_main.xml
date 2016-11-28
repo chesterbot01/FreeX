@@ -42,7 +42,9 @@
         android:layout_height="wrap_content"
         android:inputType="number"
         android:hint="Please enter the amount"
-        android:digits="1234567890."/>
+        android:digits="1234567890."
+        />
+
 
 
     <TextView

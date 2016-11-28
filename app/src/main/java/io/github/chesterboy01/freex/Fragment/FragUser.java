@@ -152,9 +152,7 @@ public class FragUser extends Fragment {
                     fetch_result = false;
                 else{
                     JSONArray jsonArray = new JSONArray(result);
-                    Log.v("JSONArray jsonArray = new JSONArray(result);????", jsonArray.toString());
-                    //JSONObject jsonObject = new JSONObject(result);
-                    //JSONArray jsonArray = jsonObject.getJSONArray();
+
                     JSONObject objcad = (JSONObject) jsonArray.get(0);
                     JSONObject objrmb = (JSONObject) jsonArray.get(1);
                     JSONObject objusd = (JSONObject) jsonArray.get(2);
@@ -183,10 +181,27 @@ public class FragUser extends Fragment {
         protected void onPostExecute(Void params) {
             //while(!fetch_flag);
             if(fetch_result == true) {
-                Log.v("到底访问了没！！？？", "sfdsdfsfsfsfsdfsdf");
-                cadBal.setText(cadBalance.getBamount());
-                rmbBal.setText(rmbBalance.getBamount());
-                usdBal.setText(usdBalance.getBamount());
+                // Log.v("到底访问了没！！？？", "sfdsdfsfsfsfsdfsdf");
+                if(cadBalance.getBamount().lastIndexOf(".") == -1){
+                    cadBal.setText(cadBalance.getBamount());
+                }else{
+                    int point = cadBalance.getBamount().lastIndexOf(".");
+                    cadBal.setText(cadBalance.getBamount().substring(0,point+3));
+                }
+                if(rmbBalance.getBamount().lastIndexOf(".") == -1){
+                    rmbBal.setText(rmbBalance.getBamount());
+                }else{
+                    int point2 = rmbBalance.getBamount().lastIndexOf(".");
+                    rmbBal.setText(rmbBalance.getBamount().substring(0,point2+3));
+                }
+                if(rmbBalance.getBamount().lastIndexOf(".") == -1){
+                    usdBal.setText(usdBalance.getBamount());
+                }else{
+                    int point3 = usdBalance.getBamount().lastIndexOf(".");
+                    usdBal.setText(usdBalance.getBamount().substring(0,point3+3));
+                }
+
+
             }
         }
 

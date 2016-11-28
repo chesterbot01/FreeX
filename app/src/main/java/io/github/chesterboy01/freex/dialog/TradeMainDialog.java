@@ -299,6 +299,10 @@ public class TradeMainDialog extends DialogFragment {
             }
             @Override
             public void afterTextChanged(Editable s){
+
+                if ((s.toString().contains("-")||s.toString().contains("+")||s.toString().contains(".")))
+                    inAmount.setText("");
+
                 String amount = inAmount.getText().toString();
                 String rate = tradeRate.getText().toString();
                 //两个输入框不为空，而且换入换出的货币类型不同
@@ -683,7 +687,7 @@ public class TradeMainDialog extends DialogFragment {
         protected void onPostExecute(Void params) {
             builder1 = new AlertDialog.Builder(act);
             builder1.setTitle("Confirmation");
-            builder1.setMessage(" Are you sure? " + singleTransaction.getCidin() + " " + str_new + " have been flew in, " + singleTransaction.getCidout()+" have been flew out " + str_left+ "  , rate is "+ str_rate + " ");
+            builder1.setMessage(" Are you sure? " + singleTransaction.getCidin() + "; " + str_new + " have been flew in; " + singleTransaction.getCidout()+" have been flew out, " + str_left+ "; rate is "+ str_rate + ". ");
             builder1.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {

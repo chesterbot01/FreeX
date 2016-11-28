@@ -3,7 +3,6 @@ package io.github.chesterboy01.freex.Fragment;
 import android.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,24 +10,12 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
 import io.github.chesterboy01.freex.R;
 import io.github.chesterboy01.freex.UserPass;
-import io.github.chesterboy01.freex.entity.Balance;
 import io.github.chesterboy01.freex.entity.User;
 
 import static io.github.chesterboy01.freex.R.id.rate;
@@ -75,7 +62,13 @@ public class FragHistory extends Fragment {
                 map.put("outtype", typeOfCucurrencyGenerator(i+1));
                 map.put("outamount", outamount);
                 //减少rate的显示位数，使用float类型
-                map.put("rate", (float)inamount/outamount);
+                String strrate = Double.valueOf(inamount/outamount).toString();
+                int point = strrate.lastIndexOf(".");
+                if (point >= strrate.length()-3)
+                    map.put("rate", strrate.substring(0,strrate.length()-1));
+                else
+                    map.put("rate", strrate.substring(0,point+4));
+                //map.put("rate", (float)inamount/outamount);
                 mylist.add(map);
             }
 
@@ -143,7 +136,7 @@ public class FragHistory extends Fragment {
         return result;
     }
 
-    public class FetchAllTransactionHistory extends AsyncTask<User, Void, Boolean> {
+    /*public class FetchAllTransactionHistory extends AsyncTask<User, Void, Boolean> {
         JSONArray jsonArray;
         protected void onPreExecute() {
 
@@ -231,5 +224,5 @@ public class FragHistory extends Fragment {
             bal.setBuid(jo.getInt("buid"));
             bal.setBcid(jo.getInt("bcid"));
         }
-    }
+    }*/
 }
