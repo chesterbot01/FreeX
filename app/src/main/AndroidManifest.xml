@@ -1,43 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-package="io.github.chesterboy01.freex">
+    package="io.github.chesterboy01.freex">
+
+    <uses-sdk android:targetSdkVersion="24" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-sdk  android:targetSdkVersion="24" />
-<application
-    android:allowBackup="true"
-    android:icon="@mipmap/ic_launcher"
-    android:label="@string/app_name"
-    android:supportsRtl="true"
-    android:theme="@style/Theme.AppCompat.Light"
-    android:name=".net.CookieApplication"
-    >
-    <activity
-        android:name=".WelcomeActivity"
-        android:theme="@style/Theme.AppCompat.NoActionBar">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-    </activity>
-    <activity
-        android:name=".FullscreenActivityBeforeLogin"
-        android:configChanges="orientation|keyboardHidden|screenSize"
+
+    <android:uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <android:uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <application
+        android:name=".net.CookieApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.AppCompat.Light">
+        <activity
+            android:name=".WelcomeActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-        android:theme="@style/Theme.AppCompat.NoActionBar">
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".FullscreenActivityBeforeLogin"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
+        <!-- 一行神奇的代码，限定了在该活动中没有标题栏！ -->
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
 
-    </activity>
-    <!-- 一行神奇的代码，限定了在该活动中没有标题栏！-->
-    <activity
-        android:name=".MainActivity"
-        android:label="@string/app_name"
-        android:theme="@style/Theme.AppCompat.NoActionBar">
-    </activity>
-    <meta-data
-        android:name="com.google.android.gms.version"
-        android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
 
-</application>
+    </application>
 
 </manifest>

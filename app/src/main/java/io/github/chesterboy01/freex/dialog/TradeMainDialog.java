@@ -4,7 +4,10 @@ import android.app.Activity;
 import android.app.Application;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.Fragment;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -17,9 +20,17 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -28,12 +39,15 @@ import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
 
 import io.github.chesterboy01.freex.R;
+import io.github.chesterboy01.freex.common.BarcodeEncoder;
 import io.github.chesterboy01.freex.entity.Balance;
 import io.github.chesterboy01.freex.entity.Transaction_history;
 import io.github.chesterboy01.freex.entity.User;
@@ -42,7 +56,7 @@ import io.github.chesterboy01.freex.net.CookieApplication;
 
 public class TradeMainDialog extends DialogFragment {
     boolean confirmation;
-
+    Fragment fragment = this;
     Application appCtx;
 //含有userid的完整对象需要传进来
     Transaction_history singleTransaction;
@@ -53,6 +67,7 @@ public class TradeMainDialog extends DialogFragment {
     String str_left;
     String str_rate;
     AlertDialog.Builder builder1;
+    ImageView image;
 
 
     public static final int DEPOSIT = 0;
@@ -116,6 +131,7 @@ public class TradeMainDialog extends DialogFragment {
         submitButton = (Button) view.findViewById(R.id.submit_trade_button);
         QRcodeGenOrScan = (Button) view.findViewById(R.id.gen_or_scan_button);
 
+        image = (ImageView) view.findViewById(R.id.iv_qr_image);
         //弹出数字输入的键盘
         inAmount.setInputType(EditorInfo.TYPE_CLASS_PHONE);
         tradeRate.setInputType(EditorInfo.TYPE_CLASS_PHONE);
@@ -222,8 +238,7 @@ public class TradeMainDialog extends DialogFragment {
                         //然后向服务器发送数据
                         //并且传入tranNew;
 
-                        Toast.makeText(act, "Withdrawl is done",
-                                Toast.LENGTH_LONG).show();
+
                         dismiss();
                         break;
                     case BUY:
@@ -251,10 +266,9 @@ public class TradeMainDialog extends DialogFragment {
                         //用户指定的汇率服务器接受吗？
 
                         //然后向服务器发送数据
-                        new LoginAsyncTradeSell().execute(tranNew);
+                        new LoginAsyncTradeBuy().execute(tranNew);
 
-                        Toast.makeText(act, "Sell is done",
-                                Toast.LENGTH_LONG).show();
+
                         dismiss();
                         break;
                     default:
@@ -273,13 +287,43 @@ public class TradeMainDialog extends DialogFragment {
 
                 switch(typeOfTransaction){
                     case BUY:
-                        singleTransaction.setThamount(inAmount.getText().toString());
-
+                        /*Intent intent_toMain = new Intent(act, ScanQR.class);
+                        //把要传的对象放到bundle里通过intent传进MainActivity中
+                        (act).startActivity(intent_toMain);*/
+                        IntentIntegrator integrator = new IntentIntegrator(act);
+                        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
+                        integrator.setPrompt("Scan");
+                        integrator.setCameraId(0);
+                        integrator.setBeepEnabled(false);
+                        integrator.setBarcodeImageEnabled(false);
+                        integrator.initiateScan();
                         break;
                     case SELL:
                         singleTransaction.setThamount(inAmount.getText().toString());
                         singleTransaction.setRate(tradeRate.getText().toString());
+                        singleTransaction.setThuid(conUser.getUid());
+                        JSONObject json = new JSONObject();
+                        try {
+                            json.put("thamount",singleTransaction.getThamount());
+                            json.put("cidout",singleTransaction.getCidout());
+                            json.put("thuid",singleTransaction.getThuid());
+                            json.put("cidin",singleTransaction.getCidin());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
 
+                        String textQR = json.toString();
+
+                        MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
+                        try{
+                            BitMatrix bitMatrix = multiFormatWriter.encode(textQR, BarcodeFormat.QR_CODE,400,400);
+                            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+                            Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
+                            image.setImageBitmap(bitmap);
+                        }
+                        catch (WriterException e){
+                            e.printStackTrace();
+                        }
                         break;
                     default:
                         Toast.makeText(act, "Error",
@@ -479,6 +523,7 @@ public class TradeMainDialog extends DialogFragment {
 
     public class LoginAsyncTradeWithdrawl extends AsyncTask<Transaction_history, Void, Boolean> {
         //WithdrawlFail
+        int state;
         protected void onPreExecute() {
 
         }
@@ -506,6 +551,7 @@ public class TradeMainDialog extends DialogFragment {
                     int code = response.getStatusLine().getStatusCode();
                     if (code == 200){
                         result = EntityUtils.toString(response.getEntity());
+                        Log.v("FUCK",result);
                     }
                 }
                 catch(ClientProtocolException e){
@@ -519,7 +565,7 @@ public class TradeMainDialog extends DialogFragment {
 
                 if (result.equals("WithdrawalFail")) {
                     result_withdrawl = false;
-                    Log.v("余额不足","fwewfwfwfewf");
+                    state = 2;
                 }
                 else{
                     JSONObject obj = new JSONObject(result);
@@ -529,6 +575,7 @@ public class TradeMainDialog extends DialogFragment {
                         conBalence.setBid(obj.getInt("bid"));
                         conBalence.setBcid(obj.getInt("bcid"));
                         conBalence.setBuid(obj.getInt("buid"));
+                        state = 1;
                     }
                 }
             } catch (Exception e) {
@@ -538,11 +585,16 @@ public class TradeMainDialog extends DialogFragment {
             flag_withdrawl = true;
             return result_withdrawl;
         }
-        protected void onPostExecute(Boolean... params) {
+        protected void onPostExecute(Boolean params) {
+            if(state == 2)
+                Toast.makeText(act, "Money Not Enough!", Toast.LENGTH_LONG).show();
+            else if (state == 1)
+                Toast.makeText(act, "Withdrawl is done",
+                        Toast.LENGTH_LONG).show();
         }
     }
 
-    public class LoginAsyncTradeSell extends AsyncTask<Transaction_history, Void, Boolean> {
+    /*public class LoginAsyncTradeSell extends AsyncTask<Transaction_history, Void, Boolean> {
         protected void onPreExecute() {
 
         }
@@ -608,15 +660,18 @@ public class TradeMainDialog extends DialogFragment {
         }
         protected void onPostExecute(Boolean... params) {
         }
-    }
+    }*/
 
     public class LoginAsyncTradeBuy extends AsyncTask<Transaction_history, Void, Void> {
+        boolean buyOrsell = true;
         protected void onPreExecute() {
 
         }
         protected Void doInBackground(Transaction_history... params) {
             String result;
             //params[0]就是我要传进来的Transaction_history对象
+            if(!params[0].getRate().equals(""))
+                buyOrsell = false;
             try {
                 String URL = "http://192.168.95.1:8080/FreeX_Server/AddNewTransaction.action";
                 result = null;
@@ -694,8 +749,12 @@ public class TradeMainDialog extends DialogFragment {
                     //然后向服务器发送数据
                     confirmation = true;
                     new ConfirmationAsync().execute(confirmation);
-                    Toast.makeText(act, "Buy is done",
-                            Toast.LENGTH_LONG).show();
+                    if(buyOrsell == false)
+                        {Toast.makeText(act, "Sell is done",
+                                Toast.LENGTH_LONG).show();}
+                    else
+                        {Toast.makeText(act, "Buy is done",
+                            Toast.LENGTH_LONG).show();}
                 }
             });
             builder1.setNegativeButton("NO", new DialogInterface.OnClickListener() {
@@ -710,7 +769,6 @@ public class TradeMainDialog extends DialogFragment {
             builder1.show();
         }
     }
-
 
 
     public class ConfirmationAsync extends AsyncTask<Boolean, Void, Boolean> {
@@ -777,6 +835,104 @@ public class TradeMainDialog extends DialogFragment {
                 Toast.makeText(act, "Transaction is done!", Toast.LENGTH_LONG).show();
             else if (state == 2)
                 Toast.makeText(act, "Transaction is cancelled!!!", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public class LoginAsyncTradeBuyQR extends AsyncTask<JSONObject, Void, Void> {
+        protected void onPreExecute() {
+
+        }
+        protected Void doInBackground(JSONObject... params) {
+            String result;
+            //params[0]就是我要传进来的Transaction_history对象
+            try {
+                String URL = "http://192.168.95.1:8080/FreeX_Server/AddQRTransaction.action";
+                result = null;
+                HttpPost request = new HttpPost(URL);
+                try{
+                    JSONObject json1 = params[0];
+                    JSONObject json2 = params[1];
+
+                    JSONArray jsonArray = new JSONArray();
+                    jsonArray.put(json1);
+                    jsonArray.put(json2);
+
+                    CookieApplication appCookie = (CookieApplication) appCtx;
+                    List<Cookie> cookies = appCookie.getCookie();
+
+                    StringEntity se = new StringEntity(jsonArray.toString(),"utf-8");
+                    request.setEntity(se);
+
+                    //set http header cookie信息
+                    request.setHeader("cookie", "JSESSIONID=" + cookies.get(0).getValue());
+
+                    HttpResponse response = new DefaultHttpClient().execute(request);;
+                    int code = response.getStatusLine().getStatusCode();
+                    if (code == 200){
+                        result = EntityUtils.toString(response.getEntity());
+                        Log.v("问题到底在哪？？", result);
+                    }
+                }
+                catch(ClientProtocolException e){
+                    e.printStackTrace();
+                    result = "ClientProtocolException:network is not available";
+                }
+                catch(IOException e) {
+                    e.printStackTrace();
+                    result = "IOException:network is not available";
+                }
+
+                if (result.equals("TransactionFail")){
+                    Toast.makeText(act, "Transaction is failed!!!", Toast.LENGTH_LONG).show();
+                }
+                else if (result.equals("MoneyNotEnough")) {
+                    Toast.makeText(act, "Money is not enough!!!", Toast.LENGTH_LONG).show();
+                }
+                else if (result.equals("Success")){
+                    Toast.makeText(act, "Success!!!", Toast.LENGTH_LONG).show();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void params) {
+
+        }
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data){
+        JSONObject objSell=null;
+        JSONObject objBuy=null;
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode,resultCode,data);
+        if (result != null) {
+            if (result.getContents() == null) {
+                Toast.makeText(act, "Scanning Cancelled", Toast.LENGTH_LONG).show();
+            } else {
+                String sellerStrResult = result.getContents();
+                Toast.makeText(act, sellerStrResult, Toast.LENGTH_LONG).show();
+                try {
+                    objSell = new JSONObject(sellerStrResult);
+                    objBuy = new JSONObject(sellerStrResult);
+
+                    objBuy.put("thuid",conUser.getUid());
+                    objBuy.put("cidout",objSell.getString("cidin"));
+                    objBuy.put("cidin",objSell.getString("cidout"));
+                    Double rate = new Double(1.0/Double.valueOf(objSell.getString("rate")));
+                    Double d_amount = new Double(objSell.getString("thamount"));
+                    Double d_buy_amount = new Double(d_amount/rate);
+                    objBuy.put("rate",rate.toString());
+                    objBuy.put("thamount",d_buy_amount.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                new LoginAsyncTradeBuyQR().execute(objSell,objBuy);
+            }
+        }
+        else {
+
+            super.onActivityResult(requestCode, resultCode, data);
         }
     }
 }

@@ -29,4 +29,8 @@ dependencies {
     compile 'com.google.android.gms:play-services-appindexing:8.4.0'
     compile 'net.sf.json-lib:json-lib:2.4:jdk15'
     compile 'cz.msebera.android:httpclient:4.4.1.1'
+
+
+    compile 'com.google.zxing:core:3.2.1'
+    compile 'com.journeyapps:zxing-android-embedded:3.2.0@aar'
 }
