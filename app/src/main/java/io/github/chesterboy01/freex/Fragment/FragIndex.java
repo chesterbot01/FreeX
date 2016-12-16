@@ -101,8 +101,8 @@ public class FragIndex extends Fragment {
                             str_rmb = str_rmb.substring(0,10);
                         if(str_usd.length()>10)
                             str_usd = str_usd.substring(0,10);
-                        rmbInput.setText(str_rmb+" CNY");
-                        usdInput.setText(str_usd+" USD");
+                        rmbInput.setText(str_rmb);
+                        usdInput.setText(str_usd);
                     }
                 }
             }
@@ -131,8 +131,8 @@ public class FragIndex extends Fragment {
                             str_cad = str_cad.substring(0,10);
                         if(str_usd.length()>10)
                             str_usd = str_usd.substring(0,10);
-                        cadInput.setText(str_cad+" CAD");
-                        usdInput.setText(str_usd+" USD");
+                        cadInput.setText(str_cad);
+                        usdInput.setText(str_usd);
                     }
                 }
             }
@@ -161,8 +161,8 @@ public class FragIndex extends Fragment {
                             str_rmb = str_rmb.substring(0,10);
                         if(str_cad.length()>10)
                             str_cad = str_cad.substring(0,10);
-                        rmbInput.setText(str_rmb+" CNY");
-                        cadInput.setText(str_cad+" CAD");
+                        rmbInput.setText(str_rmb);
+                        cadInput.setText(str_cad);
                     }
                 }
             }
