@@ -28,7 +28,7 @@
     </ViewFlipper>
 
     <TextView
-        android:layout_marginTop="114dp"
+        android:layout_marginTop="14dp"
         android:text="Exchange Calculator"
         android:layout_width="match_parent"
         android:layout_gravity="center"
@@ -37,7 +37,13 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="14dp"
         android:textColor="#ffffff"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"/>
+
+    <Button
+        android:text="Get the newest exchange rate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/button_get_rate_api" />
 
     <EditText
         android:id="@+id/cad_calculator"

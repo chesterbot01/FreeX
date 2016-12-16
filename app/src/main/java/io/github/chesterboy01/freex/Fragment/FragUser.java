@@ -1,5 +1,6 @@
 package io.github.chesterboy01.freex.Fragment;
 
+import android.app.Activity;
 import android.app.Application;
 import android.app.Fragment;
 import android.content.Context;
@@ -10,7 +11,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -36,6 +39,7 @@ import io.github.chesterboy01.freex.net.CookieApplication;
 
 public class FragUser extends Fragment {
     Application appCtx;
+    Activity act;
     public UserPass mListener;
     User conUser;
 
@@ -47,10 +51,12 @@ public class FragUser extends Fragment {
     TextView cadBal;
     TextView rmbBal;
     TextView usdBal;
+    ImageView img;
 
     Balance cadBalance;
     Balance rmbBalance;
     Balance usdBalance;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,6 +68,7 @@ public class FragUser extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         appCtx = getActivity().getApplication();
+        act = getActivity();
         View v = inflater.inflate(R.layout.frag_user,container,false);
         conUser = mListener.getUser();
 
@@ -73,9 +80,16 @@ public class FragUser extends Fragment {
         cadBal = (TextView) v.findViewById(R.id.user_frag_cadBalance_value);
         rmbBal = (TextView) v.findViewById(R.id.user_frag_rmbBalance_value);
         usdBal = (TextView) v.findViewById(R.id.user_frag_usdBalance_value);
+        img = (ImageView) v.findViewById(R.id.imageView);
 
         userName.setText(conUser.getUsername());
         userEmail.setText(conUser.getEmail());
+        img.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                new Fetch3Balance().execute(conUser);
+                Toast.makeText(act, "Updating, please wait.", Toast.LENGTH_LONG).show();
+            }
+        });
 
         return v;
     }
@@ -184,24 +198,35 @@ public class FragUser extends Fragment {
                 // Log.v("到底访问了没！！？？", "sfdsdfsfsfsfsdfsdf");
                 if(cadBalance.getBamount().lastIndexOf(".") == -1){
                     cadBal.setText(cadBalance.getBamount());
-                }else{
+                }else if(cadBalance.getBamount().length()>9){
+                    cadBal.setText(cadBalance.getBamount().substring(0,9));
+                }
+                else{
+                    cadBal.setText(cadBalance.getBamount());
+                }
+                /*else{
                     int point = cadBalance.getBamount().lastIndexOf(".");
                     cadBal.setText(cadBalance.getBamount().substring(0,point+3));
-                }
+                }*/
                 if(rmbBalance.getBamount().lastIndexOf(".") == -1){
                     rmbBal.setText(rmbBalance.getBamount());
-                }else{
-                    int point2 = rmbBalance.getBamount().lastIndexOf(".");
-                    rmbBal.setText(rmbBalance.getBamount().substring(0,point2+3));
+                }else if(rmbBalance.getBamount().length()>9){
+                    rmbBal.setText(rmbBalance.getBamount().substring(0,9));
                 }
-                if(rmbBalance.getBamount().lastIndexOf(".") == -1){
+                else{
+                    rmbBal.setText(rmbBalance.getBamount());
+                }
+
+                if(usdBalance.getBamount().lastIndexOf(".") == -1){
                     usdBal.setText(usdBalance.getBamount());
-                }else{
-                    int point3 = usdBalance.getBamount().lastIndexOf(".");
-                    usdBal.setText(usdBalance.getBamount().substring(0,point3+3));
+                }else if(usdBalance.getBamount().length()>9){
+                    usdBal.setText(usdBalance.getBamount().substring(0,9));
+                }
+                else{
+                    usdBal.setText(usdBalance.getBamount());
                 }
 
-
+                Toast.makeText(act, "Balances are up to date now.", Toast.LENGTH_LONG).show();
             }
         }
 
@@ -212,4 +237,5 @@ public class FragUser extends Fragment {
             bal.setBcid(jo.getInt("bcid"));
         }
     }
+
 }

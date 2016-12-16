@@ -172,9 +172,9 @@ public class SignUpDialogFragment extends DialogFragment {
                 while(!flag_signup);
 
                 if (result_signup == true)
-                    Toast.makeText(getActivity(), "注册成功！", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "Sign up success！", Toast.LENGTH_LONG).show();
                 else
-                    Toast.makeText(getActivity(), "失败", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "Fail", Toast.LENGTH_LONG).show();
 
                 dismiss();
             }

@@ -6,7 +6,6 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -29,8 +28,6 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -39,7 +36,6 @@ import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -58,7 +54,7 @@ public class TradeMainDialog extends DialogFragment {
     boolean confirmation;
     Fragment fragment = this;
     Application appCtx;
-//含有userid的完整对象需要传进来
+    //We need entity here which contains userid.
     Transaction_history singleTransaction;
     User conUser;
     Balance conBalence;
@@ -68,7 +64,7 @@ public class TradeMainDialog extends DialogFragment {
     String str_rate;
     AlertDialog.Builder builder1;
     ImageView image;
-
+    boolean buyOrsell;
 
     public static final int DEPOSIT = 0;
     public static final int WITHDRAWL = 1;
@@ -90,7 +86,7 @@ public class TradeMainDialog extends DialogFragment {
     Button QRcodeGenOrScan;
 
 
-    //用于asynctask返回结果的boolean变量
+    //flag need by AsyncTask for returning result.
     boolean result_deposit;
     boolean result_withdrawl;
     boolean result_sell;
@@ -114,7 +110,7 @@ public class TradeMainDialog extends DialogFragment {
 
         singleTransaction = new Transaction_history();
 
-        //表示是4种功能里的哪一种
+        //determined by which type of four.
         _1of_4 = (TextView) view.findViewById(R.id.trade_main_type_title);
         calculatedAmount = (TextView) view.findViewById(R.id.textViewoutamount2);
         title_typeIn = (TextView) view.findViewById(R.id.textViewtypein);
@@ -132,14 +128,14 @@ public class TradeMainDialog extends DialogFragment {
         QRcodeGenOrScan = (Button) view.findViewById(R.id.gen_or_scan_button);
 
         image = (ImageView) view.findViewById(R.id.iv_qr_image);
-        //弹出数字输入的键盘
+        //pop up the keyboard which only support digits input
         inAmount.setInputType(EditorInfo.TYPE_CLASS_PHONE);
         tradeRate.setInputType(EditorInfo.TYPE_CLASS_PHONE);
 
         disableAll();
         enableAccordingToType(typeOfTransaction);
 
-        //流入货币类型的spinner的控件逻辑
+        //The logics of the spinner which is in charge of the type of flew-in currency.
         s_in.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view,
@@ -200,12 +196,12 @@ public class TradeMainDialog extends DialogFragment {
         });
 
 
-        //发起交易的按键动作
+        //Define something that happens after SUBMIT button is clicked.
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //保证每按一次都生成一个交易，
-                //那个全局的singleTransaction只是一个tmp
+                //Ensure one transaction is launched after this button is clicked
+                //singleTransaction is just a global temporary variable.
                 Transaction_history tranNew = new Transaction_history();
 
                 switch(typeOfTransaction){
@@ -234,11 +230,9 @@ public class TradeMainDialog extends DialogFragment {
                         tranNew.setCidout(singleTransaction.getCidout());
                         tranNew.setThamount(singleTransaction.getThamount());
 
+                        //Then turn to request to the server
+                        //and send tranNew;
                         new LoginAsyncTradeWithdrawl().execute(tranNew);
-                        //然后向服务器发送数据
-                        //并且传入tranNew;
-
-
                         dismiss();
                         break;
                     case BUY:
@@ -248,9 +242,8 @@ public class TradeMainDialog extends DialogFragment {
                         tranNew.setCidin(singleTransaction.getCidin());
                         tranNew.setCidout(singleTransaction.getCidout());
                         tranNew.setThamount(singleTransaction.getThamount());
+                        buyOrsell = true;
                         new LoginAsyncTradeBuy().execute(tranNew);
-
-
 
                         dismiss();
                         break;
@@ -263,11 +256,10 @@ public class TradeMainDialog extends DialogFragment {
                         tranNew.setCidout(singleTransaction.getCidout());
                         tranNew.setThamount(singleTransaction.getThamount());
                         tranNew.setRate(singleTransaction.getRate());
-                        //用户指定的汇率服务器接受吗？
-
-                        //然后向服务器发送数据
+                        //will the server accept the rate designated by the user?
+                        //Then turn to request to the server
+                        buyOrsell = false;
                         new LoginAsyncTradeBuy().execute(tranNew);
-
 
                         dismiss();
                         break;
@@ -279,7 +271,7 @@ public class TradeMainDialog extends DialogFragment {
             }
         });
 
-        //扫描二维码的按键动作
+        //define the logics after click action of QRCODE button.
         QRcodeGenOrScan.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -287,16 +279,10 @@ public class TradeMainDialog extends DialogFragment {
 
                 switch(typeOfTransaction){
                     case BUY:
-                        /*Intent intent_toMain = new Intent(act, ScanQR.class);
-                        //把要传的对象放到bundle里通过intent传进MainActivity中
-                        (act).startActivity(intent_toMain);*/
-                        IntentIntegrator integrator = new IntentIntegrator(act);
-                        integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
-                        integrator.setPrompt("Scan");
-                        integrator.setCameraId(0);
-                        integrator.setBeepEnabled(false);
-                        integrator.setBarcodeImageEnabled(false);
-                        integrator.initiateScan();
+                        //We change the place of triggering scanning QRCode.
+                        Toast.makeText(act, "Please switch to INDEX page, and trigger the title bar!",
+                                Toast.LENGTH_LONG).show();
+                        dismiss();
                         break;
                     case SELL:
                         singleTransaction.setThamount(inAmount.getText().toString());
@@ -308,12 +294,13 @@ public class TradeMainDialog extends DialogFragment {
                             json.put("cidout",singleTransaction.getCidout());
                             json.put("thuid",singleTransaction.getThuid());
                             json.put("cidin",singleTransaction.getCidin());
+                            json.put("rate",singleTransaction.getRate());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
 
                         String textQR = json.toString();
-
+                        Log.v("json",textQR);
                         MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
                         try{
                             BitMatrix bitMatrix = multiFormatWriter.encode(textQR, BarcodeFormat.QR_CODE,400,400);
@@ -360,7 +347,7 @@ public class TradeMainDialog extends DialogFragment {
             }
         });
 
-        //动态计算输出的总额 窗口二
+        //dynamically calculate the sum of output money, window II
         tradeRate.addTextChangedListener(new TextWatcher(){
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -382,16 +369,10 @@ public class TradeMainDialog extends DialogFragment {
             }
         });
 
-       /* inputRate = tradeRate.getText().toString();
-        if (inputRate.matches("")) {
-            currentRate = parseDouble(inputRate);
-        }
-        else
-            currentRate = 6.82;*/
         return builder.setView(view).create();
     }
 
-    //根据交易的类型enable控件
+    //after disableAll(), enable widgts respectively.
     protected void enableAccordingToType (int type){
         switch(type){
             case DEPOSIT:
@@ -437,13 +418,12 @@ public class TradeMainDialog extends DialogFragment {
         }
     }
 
-    //初始化时diable所有根据不同类型可能用不到的控件
+    //While initialization, disable widgets accoring to different transaction type
     private void disableAll(){
         s_in.setEnabled(false);
         s_out.setEnabled(false);
         //inAmount.setEnabled(false);
         tradeRate.setEnabled(false);
-        //反正4个功能都要submit和输入数目的
         //submitButton.setEnabled(false);
         QRcodeGenOrScan.setEnabled(false);
         title_typeIn.setEnabled(false);
@@ -465,7 +445,7 @@ public class TradeMainDialog extends DialogFragment {
         }
         protected Boolean doInBackground(Transaction_history... params) {
             String result;
-            //params[0]就是我要传进来的Transaction_history对象
+            //params[0] is instances of Transaction_history that passed in.
             try {
                 String URL = "http://192.168.95.1:8080/FreeX_Server/deposit.action";
                 result = null;
@@ -523,12 +503,12 @@ public class TradeMainDialog extends DialogFragment {
 
     public class LoginAsyncTradeWithdrawl extends AsyncTask<Transaction_history, Void, Boolean> {
         //WithdrawlFail
-        int state;
+        int state = 0;
         protected void onPreExecute() {
 
         }
         protected Boolean doInBackground(Transaction_history... params) {
-            //params[0]就是我要传进来的Transaction_history对象
+            //params[0] is instances of Transaction_history that passed in.
             String result;
             try {
                 String URL = "http://192.168.95.1:8080/FreeX_Server/withdrawal.action";
@@ -569,14 +549,12 @@ public class TradeMainDialog extends DialogFragment {
                 }
                 else{
                     JSONObject obj = new JSONObject(result);
-                    if (obj.getInt("buid") > 0) {
-                        result_withdrawl = true;
-                        conBalence.setBamount(obj.getString("bamount"));
-                        conBalence.setBid(obj.getInt("bid"));
-                        conBalence.setBcid(obj.getInt("bcid"));
-                        conBalence.setBuid(obj.getInt("buid"));
-                        state = 1;
-                    }
+                    result_withdrawl = true;
+                    conBalence.setBamount(obj.getString("bamount"));
+                    conBalence.setBid(obj.getInt("bid"));
+                    conBalence.setBcid(obj.getInt("bcid"));
+                    conBalence.setBuid(obj.getInt("buid"));
+                    state = 1;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -586,9 +564,9 @@ public class TradeMainDialog extends DialogFragment {
             return result_withdrawl;
         }
         protected void onPostExecute(Boolean params) {
-            if(state == 2)
+            if(state == 2 || state == 0)
                 Toast.makeText(act, "Money Not Enough!", Toast.LENGTH_LONG).show();
-            else if (state == 1)
+            else
                 Toast.makeText(act, "Withdrawl is done",
                         Toast.LENGTH_LONG).show();
         }
@@ -669,9 +647,8 @@ public class TradeMainDialog extends DialogFragment {
         }
         protected Void doInBackground(Transaction_history... params) {
             String result;
-            //params[0]就是我要传进来的Transaction_history对象
-            if(!params[0].getRate().equals(""))
-                buyOrsell = false;
+            //params[0] is instances of Transaction_history that passed in.
+
             try {
                 String URL = "http://192.168.95.1:8080/FreeX_Server/AddNewTransaction.action";
                 result = null;
@@ -689,14 +666,13 @@ public class TradeMainDialog extends DialogFragment {
                     StringEntity se = new StringEntity(json.toString(),"utf-8");
                     request.setEntity(se);
 
-                    //set http header cookie信息
+                    //set http header cookie information
                     request.setHeader("cookie", "JSESSIONID=" + cookies.get(0).getValue());
 
                     HttpResponse response = new DefaultHttpClient().execute(request);;
                     int code = response.getStatusLine().getStatusCode();
                     if (code == 200){
                         result = EntityUtils.toString(response.getEntity());
-                        Log.v("问题到底在哪？？", result);
                     }
                 }
                 catch(ClientProtocolException e){
@@ -724,11 +700,6 @@ public class TradeMainDialog extends DialogFragment {
                         str_new = obj.getString("1");
                         str_left = obj.getString("2");
                         str_rate = obj.getString("3");
-                        Log.v("换成多少",str_new);
-                        Log.v("还剩多少",str_left);
-                        Log.v("汇率",str_rate);
-
-
                     }
                 }
             } catch (Exception e) {
@@ -742,7 +713,7 @@ public class TradeMainDialog extends DialogFragment {
         protected void onPostExecute(Void params) {
             builder1 = new AlertDialog.Builder(act);
             builder1.setTitle("Confirmation");
-            builder1.setMessage(" Are you sure? " + singleTransaction.getCidin() + "; " + str_new + " have been flew in; " + singleTransaction.getCidout()+" have been flew out, " + str_left+ "; rate is "+ str_rate + ". ");
+            builder1.setMessage("Are you sure to continue?\n In-currency type is " + singleTransaction.getCidin() + "; Unfinished in-amount is " + str_new + ";\n Out-currency type is " + singleTransaction.getCidout()+" Flew-out amount is " + str_left+ ";\n Exchange Rate is "+ str_rate + ".");
             builder1.setPositiveButton("YES", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -780,6 +751,7 @@ public class TradeMainDialog extends DialogFragment {
 
             String result;
             try {
+                state = 0;
                 String URL = "http://192.168.95.1:8080/FreeX_Server/ExecuteNewTransaction.action";
                 result = null;
                 HttpPost request = new HttpPost(URL);
@@ -831,108 +803,13 @@ public class TradeMainDialog extends DialogFragment {
             return result_sell;
         }
         protected void onPostExecute(Boolean params) {
-            if (state == 1)
+            if (state != 2) {
                 Toast.makeText(act, "Transaction is done!", Toast.LENGTH_LONG).show();
-            else if (state == 2)
+            }
+            else
                 Toast.makeText(act, "Transaction is cancelled!!!", Toast.LENGTH_LONG).show();
         }
     }
 
-    public class LoginAsyncTradeBuyQR extends AsyncTask<JSONObject, Void, Void> {
-        protected void onPreExecute() {
 
-        }
-        protected Void doInBackground(JSONObject... params) {
-            String result;
-            //params[0]就是我要传进来的Transaction_history对象
-            try {
-                String URL = "http://192.168.95.1:8080/FreeX_Server/AddQRTransaction.action";
-                result = null;
-                HttpPost request = new HttpPost(URL);
-                try{
-                    JSONObject json1 = params[0];
-                    JSONObject json2 = params[1];
-
-                    JSONArray jsonArray = new JSONArray();
-                    jsonArray.put(json1);
-                    jsonArray.put(json2);
-
-                    CookieApplication appCookie = (CookieApplication) appCtx;
-                    List<Cookie> cookies = appCookie.getCookie();
-
-                    StringEntity se = new StringEntity(jsonArray.toString(),"utf-8");
-                    request.setEntity(se);
-
-                    //set http header cookie信息
-                    request.setHeader("cookie", "JSESSIONID=" + cookies.get(0).getValue());
-
-                    HttpResponse response = new DefaultHttpClient().execute(request);;
-                    int code = response.getStatusLine().getStatusCode();
-                    if (code == 200){
-                        result = EntityUtils.toString(response.getEntity());
-                        Log.v("问题到底在哪？？", result);
-                    }
-                }
-                catch(ClientProtocolException e){
-                    e.printStackTrace();
-                    result = "ClientProtocolException:network is not available";
-                }
-                catch(IOException e) {
-                    e.printStackTrace();
-                    result = "IOException:network is not available";
-                }
-
-                if (result.equals("TransactionFail")){
-                    Toast.makeText(act, "Transaction is failed!!!", Toast.LENGTH_LONG).show();
-                }
-                else if (result.equals("MoneyNotEnough")) {
-                    Toast.makeText(act, "Money is not enough!!!", Toast.LENGTH_LONG).show();
-                }
-                else if (result.equals("Success")){
-                    Toast.makeText(act, "Success!!!", Toast.LENGTH_LONG).show();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-        @Override
-        protected void onPostExecute(Void params) {
-
-        }
-    }
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data){
-        JSONObject objSell=null;
-        JSONObject objBuy=null;
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode,resultCode,data);
-        if (result != null) {
-            if (result.getContents() == null) {
-                Toast.makeText(act, "Scanning Cancelled", Toast.LENGTH_LONG).show();
-            } else {
-                String sellerStrResult = result.getContents();
-                Toast.makeText(act, sellerStrResult, Toast.LENGTH_LONG).show();
-                try {
-                    objSell = new JSONObject(sellerStrResult);
-                    objBuy = new JSONObject(sellerStrResult);
-
-                    objBuy.put("thuid",conUser.getUid());
-                    objBuy.put("cidout",objSell.getString("cidin"));
-                    objBuy.put("cidin",objSell.getString("cidout"));
-                    Double rate = new Double(1.0/Double.valueOf(objSell.getString("rate")));
-                    Double d_amount = new Double(objSell.getString("thamount"));
-                    Double d_buy_amount = new Double(d_amount/rate);
-                    objBuy.put("rate",rate.toString());
-                    objBuy.put("thamount",d_buy_amount.toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                new LoginAsyncTradeBuyQR().execute(objSell,objBuy);
-            }
-        }
-        else {
-
-            super.onActivityResult(requestCode, resultCode, data);
-        }
-    }
 }

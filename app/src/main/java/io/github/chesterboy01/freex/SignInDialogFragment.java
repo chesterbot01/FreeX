@@ -239,7 +239,7 @@ public class SignInDialogFragment extends DialogFragment {
             }
             else{
                 if (result1&&flag1) {
-                    Toast.makeText(act, "登录成功", Toast.LENGTH_LONG).show();
+                    Toast.makeText(act, "Login Success!", Toast.LENGTH_LONG).show();
 
                        /* Toast.makeText(getActivity(),
                                 "用户名是" + conUser.getUsername() + " 密码是" + conUser.getPassword(),
