@@ -1,7 +1,8 @@
 # FreeX, feel free to exchange.
-FreeX (Free to eXchange) is a mobile application for online and face-to-face currency exchange transactions.
-This is the team project required by ECE 651, instructed by Prof. Werner Dietl.
-My job is the development of the front end in Android platform.
+
+FreeX (Free to eXchange) is a mobile application for online and face-to-face currency exchange transactions.  
+This is the team project required by ECE 651, instructed by Prof. Werner Dietl.  
+My job is the development of the front end in Android platform.  
 =======
 ## Main Contributions
 
